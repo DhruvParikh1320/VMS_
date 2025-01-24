@@ -1,0 +1,187 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    
+    <!-- Content Header (Page header) -->
+    <div style="padding:10px;" id="message-container">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+
+      <div id="dynamic-message" class="success-alert"></div> 
+
+    </div>
+    
+    <section class="content-header">
+        
+      <h1>
+        VISITOR USER
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">VISITOR USER</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-12">
+          
+          <div class="box">
+          <div class="box-header">
+          </div>
+
+          <div class="table-responsive" style="margin: 10px;">
+            <table id="appointment_table" class="table table-bordered table-striped" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>VISITOR NAME</th>
+                    <th>EMAIL</th>
+                    <th>GENDER</th>                 
+                    <th>MOBILE</th> 
+                    <th>CREATED AT</th>
+                    <th>STATUS</th>              
+
+                  </tr>
+                </thead>
+
+            </table>
+            {% csrf_token %}
+
+      </div>
+      
+</section>
+</div>
+</div>
+
+
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+
+    <script>
+        $(document).ready(function() {
+            // Initialize CSRF token setup for AJAX
+            var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+            console.log('csrfToken:-', csrfToken);
+    
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                    }
+                }
+            });
+    
+            // Initialize DataTable
+            $('#appointment_table').DataTable({
+                "ajax": {
+                    "url": "{% url 'admin_visitor_user_page_ajax' %}",
+                    "type": "POST"
+                },
+                "columns": [
+                    { data: 'id' },
+                    { data: null, render: function(data, type, row) {
+                        return row.first_name + ' ' + row.last_name;
+                    }},
+                    { data: 'email' },
+                    { data: 'gender' },
+                    { data: 'mobile' },
+                    { data: 'created_at' },
+                    {
+                        data: 'is_active', 
+                        render: function(data, type, row) {
+                            var buttonClass = data ? 'btn-success' : 'btn-danger';
+                            var buttonText = data ? 'Active' : 'Inactive';
+                            return `<button class="btn ${buttonClass} toggle-btn" data-id="${row.id}" data-status="${data}">${buttonText}</button>`;
+                        }
+                    }
+                ],
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "ordering": false,
+                "lengthMenu": [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+                "layout": {
+                    "topStart": {
+                        "buttons": ['csv', 'pageLength']
+                    }
+                },
+                "error": function(xhr, error, code) {
+                    console.error("An error occurred: ", error);
+                }
+            });
+    
+            // Handle toggle button click to change user status
+            $(document).on('click', '.toggle-btn', function() {
+                var button = $(this);
+                var userId = button.data('id');
+                var currentStatus = button.data('status');
+                var newStatus = currentStatus === 1 ? 0 : 1; // Toggle between 1 and 0
+                var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+    
+                // Send AJAX request to update status
+                $.ajax({
+                    url: '{% url "admin_update_user_status" %}', // URL for updating status (create this URL in Django)
+                    type: 'POST',
+                    data: {
+                        'id': userId,
+                        'is_active': newStatus,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Update button appearance based on new status
+                            button.data('status', newStatus);
+                            button.removeClass(currentStatus === 1 ? 'btn-success' : 'btn-danger')
+                                  .addClass(newStatus === 1 ? 'btn-success' : 'btn-danger')
+                                  .text(newStatus === 1 ? 'Active' : 'Inactive');
+                            // Show success message dynamically
+                            var action = newStatus === 1 ? 'Activated' : 'Deactivated';
+                            showMessage(`Status successfully ${action} !`, 'success');
+                        } else {
+                            showMessage('Failed to update status', 'danger');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('An error occurred: ', error);
+                        showMessage('An error occurred while updating the status.', 'danger');
+                    }
+                });
+            });
+    
+            // Function to show the message dynamically
+            function showMessage(message, type) {
+                var messageClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                var iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+                var messageHtml = `
+                    <div class="alert ${messageClass} alert-dismissible fade in" role="alert">
+                        <i class="fa ${iconClass}"></i> ${message}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `;
+                $('#message-container').html(messageHtml);
+                
+                // Optional: Auto-hide message after 5 seconds
+                setTimeout(function() {
+                    $('#message-container').children().fadeOut('slow', function() {
+                        $(this).remove();
+                    });
+                }, 500);
+            }
+        });
+    </script>

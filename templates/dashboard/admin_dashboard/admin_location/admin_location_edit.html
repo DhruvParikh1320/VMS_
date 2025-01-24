@@ -1,0 +1,128 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        Edit  Location
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Edit  Location</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Add New Location</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>Country</label>
+                            <select name="country_id" id="country-dropdown" class="form-control" required="">
+                              <option value="">-- Select Country --</option>
+                              {% for country in all_country %}
+                                    <option value="{{ country.id }}" {% if country.id == all_location.country_id %} selected {% endif %}>{{ country.name }}</option>
+                              {% endfor %}                 
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>State</label>
+                            <select name="state_id" id="state-dropdown" class="form-control" required="">
+                              <option value="{{state.id}}" selected>{{state.name}}</option>                
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>City</label>
+                            <select name="city_id" id="city-dropdown" class="form-control" required="">
+                              <option value="{{cities.id}}">{{cities.name}}</option>                
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Location Name</label>
+                            <input type="text" name="location_name" class="form-control" value={{all_location.location_name}} required="" >
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" id="status" class="form-control" required="">
+                              <option value="1" >Active</option>
+                              <option value="0">Inactive</option>
+                            </select>
+                          </div>
+                    </div>
+
+                    <div class="box-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script type="text/javascript">
+    $("#country-dropdown").change(function () {
+        var url = "{% url 'admin_location_ajax_load_states' %}"; // get the url of the `load_states` view
+        var countryId = $(this).val(); // get the selected country ID from the HTML input
+        
+        $.ajax({                       
+            url: url,
+            data: {
+                'country_id': countryId // add the country ID to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_states` view function
+                $("#state-dropdown").html('<option value="">-- Select State --</option>');
+                $("#city-dropdown").html('<option value="">-- Select City --</option>'); // Clear city dropdown
+                $.each(data, function (key, value) {
+                    $("#state-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+    $("#state-dropdown").change(function () {
+        var url = "{% url 'admin_location_ajax_load_cities' %}"; // get the url of the `load_cities` view
+        var stateId = $(this).val(); // get the selected state ID from the HTML input
+        
+        $.ajax({                       
+            url: url,
+            data: {
+                'state_id': stateId // add the state ID to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#city-dropdown").html('<option value="">-- Select City --</option>');
+                $.each(data, function (key, value) {
+                    $("#city-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>

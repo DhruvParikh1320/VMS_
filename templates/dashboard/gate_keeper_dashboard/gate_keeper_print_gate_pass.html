@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'default/geek_keeper/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'default/header/font-awesome.min.css' %}">
+    <style>
+
+        <style>
+
+        .visitor-card {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .visitor-card .container{
+            margin: 0 auto;
+        }
+        .heading {
+            text-align: center;
+            padding: 15px 0 10px;
+        }
+
+        .heading h2 {
+            font-size: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-decoration: underline;
+            text-underline-offset: 5px;
+            text-decoration-color:#327ab9;
+
+        }
+
+        .field-name {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .field-name span {
+            flex: 1;
+        }
+
+        .imglogo-v {
+                     
+            text-align: center;
+        }
+
+        .imglogo-v img {
+            max-width: 150px;
+        }
+
+             .com-img {
+            border-radius: 10px;
+            border: 6px double #1c3a6b;
+            width: 100px;
+            height: 100px;
+            margin: 0 15px;
+        }
+
+        .op-bottom {
+            position: relative;
+            padding: 5px 0;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .op-bottom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: #327ab9;
+
+        }
+
+        .crad-v {
+            max-width: 450px;
+            /* height: 450px; */
+            margin: 0 auto;
+            /* background: url("{% static background_image %}"); */
+            background-repeat: no-repeat;
+            padding: 20px;
+            border: 1px solid #eee;
+            -webkit-box-shadow: 0px 0px 2px 5px #0000002a;
+            box-shadow: 0px 0px 2px 2px #0000002a;
+           
+        }
+
+
+        strong.font-bolder-new {
+            font-size: 14px;
+            font-weight: bolder ! important;
+            text-transform: capitalize;
+        }
+
+        .user-details {
+            font-size: 12px;
+            text-transform: uppercase;
+            padding-left: 5px;
+        }
+        .visitor-card .imglogo-v-wrap {
+            display: flex;
+            align-items: center;
+
+        }
+        address {
+            font-size: 12px;
+        }
+        /* QR Code Container Styling */
+        .qr-code {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9; /* Light gray background for contrast */
+            border: 2px solid #ddd; /* Subtle border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 10px; /* Inner spacing */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for a 3D effect */
+            max-width: 120px; /* Restrict maximum size */
+            margin: auto; /* Center the container */
+        }
+        
+        /* QR Code Image Styling */
+        .qr-code img {
+            width: 100%; /* Ensure image fills the container */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove unwanted inline spacing */
+            border-radius: 5px; /* Slightly rounded corners for the QR code */
+            transition: transform 0.3s ease; /* Smooth zoom effect */
+        }
+        
+        .qr-code img:hover {
+            transform: scale(1.1); /* Slight zoom on hover */
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="visitor-card">
+        <div class="container">
+            <div class="crad-v">
+                <div class="imglogo-v-wrap">
+                    <div class="imglogo-v">
+                        {% if GET_PASS_IMAGE %}
+                            <img src="{% static GET_PASS_IMAGE %}" class="com-logo">
+                        {% else %}
+    
+                        {% endif %}                 
+                        <!--<img src="{% static GET_PASS_IMAGE  %}" class="com-logo">                     -->
+                        <h6>{{appointment.0.company_name}}</h6>
+                        <address>
+                            {{appointment.0.address_1}}
+                        </address>
+                    </div>
+                    <div class="imglogo-v">                        
+                        <img src="/user/{{ appointment.0.visitors_image }}" class="com-img">
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <div class="heading">
+                        <h2>Visitor Slip</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-12">
+                        <div class="text-vcard visitor-details">
+                            <div class="mb-2">
+                                <div class="field-name"><span><strong class="font-bolder-new">Gate Pass No</strong></span>:
+                                    <span class="user-details">{{formatted_gate_pass_number}}</span>
+                                </div>
+                                <!-- <div class="field-name"><span><strong class="font-bolder-new">Pass No</strong></span>:
+                                    <span class="user-details">{{appointment.0.visitors_uni_id}}</span>
+                                </div> -->
+                                <div class="field-name"><span><strong class="font-bolder-new">Visitor
+                                            Type</strong></span>:
+                                    <span class="user-details">{{ appointment.0.visitors_type }}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Name</strong></span>:
+                                    <span class="user-details">{{ appointment.0.visitors_name }} {{ appointment.0.visitors_last_name }}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Address </strong></span>:
+                                    <span class="user-details">{{ appointment.0.visitors_address}}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Mobile No</strong></span>:
+                                    <span class="user-details">{{ appointment.0.visitors_mobile}}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Chk In Date &
+                                    Tm</strong></span>:
+                                    <span class="user-details">{{ appointment.0.check_in_time}}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Chk Out Date &
+                                            Tm</strong></span>:
+                                    <span class="user-details">{{ appointment.0.check_out_time}}</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="text-vcard">
+                            <div class="mb-2">
+
+                                <div class="field-name"><span><strong class="font-bolder-new">To Meet</strong></span>:
+                                    <span class="user-details">{{ appointment.0.employee_name }} {{ appointment.0.employee_last_name }}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Company
+                                    Name</strong></span>:
+                                    <span class="user-details">{{ appointment.0.company_name}}</span>
+                                </div>
+                                <div class="field-name"><span><strong class="font-bolder-new">Department Name  </strong></span>:
+                                    <span class="user-details">{{ appointment.0.department_name }}</span>
+                                </div>
+                                {% if pass_type == 'visitor_pass'%}
+                                <div class="field-name">
+                                    <span><strong class="font-bolder-new">Department Color Code</strong></span>:
+                                    <span class="user-details" style="width: 20px; height: 20px; background-color: {{ appointment.0.department_color_code }}; border: 1px solid #000;">
+                                </div>
+                                {% endif %}
+                                <div class="field-name"><span><strong class="font-bolder-new">Location Name</strong></span>:
+                                    <span class="user-details">{{ appointment.0.location_name }}</span>
+                                </div>
+                                {% if pass_type != 'visitor_pass'%}
+                                    <div class="qr-code">
+                                        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="Visitor QR Code" style="width: 100px; height: 100px;">
+                                    </div>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-4">
+                        <div class="op-bottom"><span><strong class="font-bolder-new">Sign Of Visitor</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-4">
+                        <div class="op-bottom"><span><strong class="font-bolder-new">Sign Of Meeting Person</strong></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-4">
+                        <div class="op-bottom"><span><strong class="font-bolder-new">Sign Of Security Officer</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+
+    <link rel="stylesheet" href="{% static 'default/geek_keeper/bootstrap.min.css' %}">
+</body>
+<!-- <button onclick="window.print()">Print this page</button> -->
+
+</html>

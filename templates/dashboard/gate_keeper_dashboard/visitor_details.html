@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Details</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 2rem;
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            background-color: #3c8dbc;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #3c8dbc;
+            margin-bottom: 1rem;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: minmax(200px, 250px) 30px 1fr;
+            align-items: baseline;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .field-label {
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .field-separator {
+            text-align: center;
+            color: #1f2937;
+            font-weight: bold;
+        }
+
+        .field-value {
+            color: #1f2937;
+        }
+
+        .image-field {
+            margin-top: 0.5rem;
+        }
+
+        .image-field img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #3c8dbc;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .button:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        @media (max-width: 640px) {
+            .field-row {
+                grid-template-columns: minmax(150px, 200px) 30px 1fr;
+                font-size: 0.875rem;
+            }
+            
+            body {
+                margin: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style='margin:0'>Visitor Details</h1>
+    </div>
+
+    <div class="container">
+        <div id="message-container" style="display: none; padding: 1rem; margin-bottom: 1rem; text-align: center; background-color: #4CAF50; color: white; border-radius: 4px;"></div>
+        {% for detail in appointment %}
+    <div class="section">
+        <h2 class="section-title">Visitor Information</h2>
+        <div class="field-row">
+            <span class="field-label">Name</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.visitors_name }} {{ detail.visitors_last_name }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Email Id</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.visitors_email|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Gender</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.visitors_gender|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Address</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.visitors_address|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Mobile Number</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.visitors_mobile|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Visitor Image</span>
+            <span class="field-separator">:</span>
+            <span class="field-value image-field">
+                <img src="/user/{{ detail.visitors_image|default:'N/A' }}" alt="Visitor Image">
+            </span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Employee Information</h2>
+        <div class="field-row">
+            <span class="field-label">Name</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.employee_name }} {{ detail.employee_last_name }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Email Id</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.employee_email|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Gender</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.employee_gender|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Address</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.employee_address|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Mobile Number</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.employee_mobile|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Employee Image</span>
+            <span class="field-separator">:</span>
+            <span class="field-value image-field">
+                <img src="/user/{{ detail.employee_image|default:'N/A' }}" alt="Employee Image">
+            </span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Appointment Details</h2>
+        <div class="field-row">
+            <span class="field-label">Appointment Date</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.appointment_date|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Appointment Time</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.appointment_time|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Status</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.status|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Purpose</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.purpose|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Details</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.details|default:"N/A" }}</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Gate Pass Information</h2>
+        <div class="field-row">
+            <span class="field-label">Gate Pass Number</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.gate_pass_number|default:"N/A" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Check-in Time</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.check_in_time|default:"Not checked in" }}</span>
+        </div>
+        <div class="field-row">
+            <span class="field-label">Check-out Time</span>
+            <span class="field-separator">:</span>
+            <span class="field-value">{{ detail.check_out_time|default:"Not checked out" }}</span>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button class="button check-in-btn" data-id="{{ detail.id }}" {% if detail.check_in_time %}disabled{% endif %}>
+            Check In
+        </button>
+        <button class="button check-out-btn" data-id="{{ detail.id }}" {% if detail.check_out_time %}disabled{% endif %}>
+            Check Out
+        </button>
+    </div>
+{% endfor %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    {% comment %} <script>
+        $(document).ready(function() {
+            $('.check-in-btn, .check-out-btn').on('click', function() {
+                const button = $(this);
+                const id = button.data('id');
+                const isCheckIn = button.hasClass('check-in-btn');
+                const url = `/gate_keeper/${isCheckIn ? 'start' : 'stop'}/${id}/`;
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'success' && response.reload) {
+                            window.location.reload();
+                        }
+                    },
+                    error: function() {
+                        alert(`Error during ${isCheckIn ? 'check-in' : 'check-out'}`);
+                    }
+                });
+            });
+        });
+    </script> {% endcomment %}
+    <script>
+        $(document).ready(function() {
+            function showMessage(message, isSuccess) {
+                const messageContainer = $('#message-container');
+                messageContainer.text(message);
+                messageContainer.css('background-color', isSuccess ? '#4CAF50' : '#F44336');
+                messageContainer.show();
+                setTimeout(function() {
+                    messageContainer.hide();
+                }, 3000); // Hide the message after 3 seconds
+            }
+    
+            $('.check-in-btn, .check-out-btn').on('click', function(event) {
+                event.preventDefault();  // Prevent the default button click action (like page scroll)
+    
+                const button = $(this);
+                const id = button.data('id');
+                const isCheckIn = button.hasClass('check-in-btn');
+                const url = `/gate_keeper/${isCheckIn ? 'start' : 'stop'}/${id}/`;
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showMessage(isCheckIn ? 'Check-in successful!' : 'Check-out successful!', true);
+                            // Disable the button after successful action
+                            button.prop('disabled', true);
+                            button.prop('disabled', true);
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 3000); // Reload the page after 3 seconds to allow message to be seen
+                        }
+                    },
+                    error: function() {
+                        showMessage(`Error during ${isCheckIn ? 'check-in' : 'check-out'}`, false);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

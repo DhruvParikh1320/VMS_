@@ -1,0 +1,91 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        Edit Company
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Edit  Company</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Edit Company</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="form-group col-lg-4">
+                            <label>Company Code</label>
+                            <input type="text" name="company_code" required="" value="{{all_company.company_code}}" class="form-control">
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Company Name</label>
+                            <input type="text" name="company_name" required="" value="{{all_company.company_name}}" class="form-control">
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label>Location</label>
+                            <select name="location_id" class="form-control" required="">
+                              <option value="">--- Select Location ---</option>
+                                {% for locationes in location %}
+                                <option value="{{locationes.id}}" {% if all_company.location_id == locationes.id %} selected {% endif %}>{{locationes.location_name}}</option>
+                                {% endfor%}
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Address 1</label>
+                            <textarea name="address_1" id="address_1" cols="3" rows="5" required=""  class="form-control">{{all_company.address_1}}</textarea>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Address 2</label>
+                            <textarea name="address_2" id="address_2" cols="3" rows="5" required=""  class="form-control">{{all_company.address_2}}</textarea>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Pincode</label>
+                            <input type="text" name="pincode" required="" class="form-control" value="{{all_company.pincode}}">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Status</label>
+                            <select name="status" id="status" class="form-control" required="">
+                              <option  value="1" {% if all_company.status == 1 %} selected {% endif %}>Active</option>
+                              <option value="0" {% if all_company.status == 0 %} selected {% endif %}>Inactive</option>
+                            </select>
+                        </div>
+
+                    <div class="box-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}

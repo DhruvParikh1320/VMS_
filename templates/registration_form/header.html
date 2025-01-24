@@ -1,0 +1,53 @@
+
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{DOMAIN_NAME}} | Admin</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <!-- Bootstrap 3.3.2 -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome Icons -->
+    {% comment %} <link href="{% static 'default/font_awesome.css' %}" rel="stylesheet" type="text/css" /> {% endcomment %}
+    <link href="{% static 'default/header/font-awesome.min.css' %}" rel="stylesheet" type="text/css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Ionicons 2.0.0 -->
+    <link href="{% static 'default/header/ionicons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Theme style -->
+    <link href="{% static 'dist/css/AdminLTE.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins 
+         folder instead of downloading all of them to reduce the load. -->
+    <link href="{% static 'dist/css/skins/_all-skins.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- iCheck -->
+    <link href="{% static 'plugins/iCheck/flat/blue.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Morris chart -->
+    <link href="{% static 'plugins/morris/morris.css' %}" rel="stylesheet" type="text/css" />
+    <!-- jvectormap -->
+    <link href="{% static 'plugins/jvectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Date Picker -->
+    <link href="{% static 'plugins/datepicker/datepicker3.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Daterange picker -->
+    <link href="{% static 'plugins/daterangepicker/daterangepicker-bs3.css' %}" rel="stylesheet" type="text/css" />
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link href="{% static 'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!--    <link href="{% static 'plugins/datatables/dataTables.bootstrap.css' %}" rel="stylesheet" type="text/css" />-->
+    <link rel="stylesheet" type="text/css" href="{% static 'default/header/dataTables.dataTables.css' %}">
+
+		<link rel="stylesheet" type="text/css" href="{% static 'default/header/buttons.dataTables.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'default/header/responsive.dataTables.css' %}">
+
+    <link rel="icon" type="image/icon" href="{% static DOMAIN_ICON %}">
+
+    <!-- bootstrap wysihtml5 - time editor -->
+    <link rel="stylesheet" href="{% static 'default/header/flatpickr.min.css' %}">
+    <script src="{% static 'default/header/flatpickr.js' %}"></script>
+    <!-- Include Select2 CSS -->
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> {% endcomment %}
+    <link href="{% static 'dist\js\pages\multiselect\jquery.multiselect.css' %}" rel="stylesheet" type="text/css" />
+
+
+
+  </head>
+{% endblock content %}

@@ -1,0 +1,271 @@
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding:10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Visitor Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Visitors</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="box">
+          <div class="box-header">
+          </div>
+          <div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rejectionModalLabel">Reject Appointment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rejectionForm">
+                            <input type="hidden" id="appointmentId" name="appointment_id">
+                            <div class="form-group">
+                                <label for="reason">Reason</label>
+                                <input type="text" class="form-control" id="reason" name="reason" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" class="form-control" id="datepicker" name="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="time">Time</label>
+                                <input type="text" class="form-control" id="timepicker" name="time" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitRejection">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+          <a href="{% url 'employee_visitore_send_invitations' %}" class="btn btn-primary" style="margin: 10px;">
+             Visitors Send Invitations</a>
+<!--          <button id="delete-selected" class="btn btn-danger" style="margin: 10px;"><i class="fa fa-trash-o"></i> DELETE SELECTED</button>-->
+          <div class="table-responsive" style="margin: 10px;">
+            <table id="area_table" class="table table-bordered table-striped" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Email</th>
+                    <th>Image</th>
+                    <th>Mobile</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>Purpose</th>
+                    <th>Details</th>
+                    <th>Visitor Type</th>
+                    <th>Visitor Timing</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+            </table>
+            {% csrf_token %}
+
+      </div>
+</section>
+</div>
+</div>
+
+
+
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<!--<script type="text/javascript">-->
+<!--  $(function () {-->
+<!--    $('#appointment_table').dataTable();-->
+<!--  });-->
+<!--</script>-->
+
+<script>
+
+    $(document).ready(function() {
+        // Retrieve CSRF token value from the hidden input
+        var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+    
+        // Set up AJAX to include the CSRF token in the headers for non-GET requests
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                    console.log("CSRF Token set in header: ", csrfToken);
+                }
+            }
+        });
+    
+        // Define the AJAX URL, ensure it's correctly rendered
+        var ajaxUrl = "{% url 'employee_visitore_ajax_page_ajax' %}";
+    
+        // Initialize DataTable with server-side processing
+        $('#area_table').DataTable({
+            "ajax": {
+                "url": ajaxUrl,
+                "type": "POST"
+            },
+            "columns": [
+                { data: 'id' },
+                { data: 'visitors_first_name' },
+                { data: 'visitors_email' },
+                {
+                    data: 'visitors_image',
+                    render: function(data, type, row) {
+                        let imageUrl = data ? '{{IMAGEPATH}}' + data : '{{DEFAULT_IMAGE}}';
+                        return '<img src="' + imageUrl + '" alt="Visitor Image" width="50" height="50"/>';
+                    }
+                },
+                { data: 'visitors_mobile' },
+                { data: 'date' },
+                { data: 'time' },
+                { data: 'status' },
+                { data: 'created_at' },
+                { data: 'updated_at' },
+                {
+                    data: 'purpose',
+                    render: function(data) {
+                        return data ? data : ''; // Replace null with empty string
+                    }
+                },
+                {
+                    data: 'detail',
+                    render: function(data) {
+                        return data ? data : ''; // Replace null with empty string
+                    }
+                },
+                { data: 'visitors_type' },
+                { data: 'visitors_timing' },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        // Disable buttons if first name is an empty string
+                        let disabled = row.visitors_first_name.trim() === '' ? 'disabled' : '';
+        
+                        return `
+                            <button class="btn btn-success" onclick="changeStatus('${row.id}', 'accepted')" ${disabled}>
+                                <i class="fa fa-fw fa-check-square" title='Accept'></i>
+                            </button>
+                            <button class="btn btn-danger" onclick="openRejectionModal('${row.id}')">
+                                <i class="fa fa-fw fa-times-circle" title='Reject'></i>
+                            </button>
+                        `;
+                    }
+                }
+            ],
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "ordering": false,
+            "lengthMenu": [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            "buttons": [
+                'csv', 'pageLength'
+            ]
+        });
+    });
+    flatpickr("#timepicker", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K", // AM/PM format
+        time_24hr: false // Use 12-hour format
+    });
+    
+    var dateInput = document.getElementById('datepicker');
+    var today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    
+    function openRejectionModal(appointmentId) {
+        console.log('Opening rejection modal for appointment ID:', appointmentId); // Debugging line
+        $('#appointmentId').val(appointmentId);
+        $('#rejectionModal').modal('show');
+    }
+    
+    function changeStatus(appointmentId, status) {
+        $.ajax({
+            url: '/api/status_changes',
+            type: 'POST',
+            data: {
+                'appointment_id': appointmentId,
+                'status': status,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'true') {
+                    alert('Status updated successfully.');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+    
+    $('#submitRejection').click(function() {
+        var appointmentId = $('#appointmentId').val();
+        var reason = $('#reason').val();
+        var date = $('#datepicker').val();
+        var time = $('#timepicker').val();
+    
+        $.ajax({
+            url: '/api/status_changes',
+            type: 'POST',
+            data: {
+                'appointment_id': appointmentId,
+                'status': 'rejected',
+                'reason': reason,
+                'date': date,
+                'time': time,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'true') {
+                    alert('Status updated successfully.');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred: ' + error);
+            }
+        });
+    
+        $('#rejectionModal').modal('hide');
+    });
+  </script>

@@ -1,0 +1,700 @@
+{% load static %}
+{% include 'dashboard/gate_keeper_dashboard/header.html' %}
+{% include 'dashboard/gate_keeper_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<style>
+    #mobileSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0; /* Align to the left */
+        right: 0; /* Allow the right edge to be fluid */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 179px;
+        overflow-y: auto;
+        z-index: 1001;
+        display: none;
+        width: 100%; /* Full width for responsiveness */
+    }
+
+    #mobileSuggestions option {
+        padding: 10px; /* Spacing inside each option */
+        cursor: pointer; /* Pointer cursor for options */
+    }
+
+    #mobileSuggestions option:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        #mobileSuggestions {
+            max-width: 90%; /* Limit width to 90% on smaller screens */
+            left: 5%; /* Center it with some padding */
+            right: 5%; /* Center it with some padding */
+        }
+    }
+
+    @media (max-width: 576px) {
+        #mobileSuggestions {
+            max-height: 150px; /* Adjust max-height for very small screens */
+        }
+    }
+</style>
+<style>
+    #emailSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0; /* Align to the left */
+        right: 0; /* Allow the right edge to be fluid */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 179px;
+        overflow-y: auto;
+        z-index: 1001;
+        display: none;
+        width: 100%; /* Full width for responsiveness */
+    }
+
+    #emailSuggestions option {
+        padding: 10px; /* Spacing inside each option */
+        cursor: pointer; /* Pointer cursor for options */
+    }
+
+    #emailSuggestions option:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        #emailSuggestions {
+            max-width: 90%; /* Limit width to 90% on smaller screens */
+            left: 5%; /* Center it with some padding */
+            right: 5%; /* Center it with some padding */
+        }
+    }
+
+    @media (max-width: 576px) {
+        #emailSuggestions {
+            max-height: 150px; /* Adjust max-height for very small screens */
+        }
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+<!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <section class="content-header">
+    <h1>
+        Add Appointment
+        <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Add Appointment</li>
+    </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Quick Add Appointment</h3>
+                </div><!-- /.box-header -->
+                <!-- form start -->
+                    <form role="form" method="POST" enctype="multipart/form-data" action="" autocomplete="off">
+                        {% csrf_token %}
+                        
+                        <div class="box-body">
+                            <div class='row'>
+                                <div class='col-md-6'>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputFirstname1">First name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control" id='Firstnames' placeholder="Enter Firstname" name="Firstname"  required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputLastname1">Last name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputEmail1">Email address</label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="Email" >
+                                        <select id="emailSuggestions" class="form-control" size="10" style="display: none;"></select>
+                                        </div>
+                                    </div>
+                
+                                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputPassword1">Password <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputConfirmPassword1">Confirm Password <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password" required>
+                                        </div>
+                                    </div>-->
+                                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Mobile Number</label>
+                                        <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number" pattern="[0-9]*" inputmode="numeric" name="mobile" minlength='10' maxlength='11' oninput="validateNumericInput(this)">
+                                        </div>
+                                    </div>-->
+                                    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Mobile Number</label>
+                                        <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number" pattern="[0-9]*" inputmode="numeric" name="mobile" minlength='10' maxlength='11' oninput="validateNumericInput(this)">
+<!--                                                 <div id="mobileSuggestions" class="suggestions-list" style="display: none;"></div>-->
+                                        <select id="mobileSuggestions" class="form-control" size="10" style="display: none;"></select>
+
+                                        </div><!-- /.input group -->
+                                    </div>
+                                    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Gender <span style="color:red">*</span></label>
+                                        <select class="form-control" name="gender" id="genderSelect" required>
+                                        <option value="">Choose Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Visitors Type <span style="color:red">*</span></label>
+                                        <select class="form-control" id="vtd" name="visitors_type" required>
+                                            <option value="">Choose visitors type</option>
+                                            <option value="candidate">Candidate </option>
+                                            <option value="customer">Customer</option>
+                                            <option value="general">General</option>
+                                            <option value="government officer">Government Officer</option>
+                                            <option value="interviewer">Inter viewer</option>
+                                            <option value="vendor">vendor</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    {% comment %} <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <label>Employee Code <span class="color_red" style="color:red">*</span></label>
+                                        <input type="number" name="employee_code" required="" class="form-control" value="" >
+                                    </div> {% endcomment %}
+                                    <div class="form-group col-lg-12">
+                                        <label>Address <span style="color:red">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" id="Address" required></textarea>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputFile">Profile Image<span style="color:red">*</span></label>
+
+                                        {% comment %} <input type="file" id="exampleInputFile"  name="image" class="form-control" required> {% endcomment %}
+                                        <div class="picture-container">
+                                            <div class='col-lg-4'>
+                                                <video id="video" width="150" height="150" autoplay style='border:1px solid #ccc;object-fit: cover;'></video>
+                                                <canvas id="canvas" style="display:none;" width='150' height='150'></canvas>
+                                                <br>
+                                                <button type="button" class="btn btn-primary btn-open-camera">Open Camera</button>
+                                                <button type="button" class="btn btn-success btn-take-picture">Take a Picture</button>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class='col-lg-3'>
+                                            <div class="form-group" id='image_user' style='display:none'>                                        
+                                                <img src="" alt="" width="150" height="150" id="userImage">
+                                                <input type="hidden" value="" id="base_user_image" name='user_image'>
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                    {% comment %} <div class="picture-container">
+                                        <h2>User Picture</h2>
+                                        <video id="video" width="150" height="150" autoplay style='border:1px solid #ccc;object-fit: cover;'></video>
+                                        <canvas id="canvas" style="display:none;" width='150' height='150'></canvas>
+                                        <button type="button" class="btn btn-primary btn-open-camera">Open Camera</button>
+                                        <button type="button" class="btn btn-success btn-take-picture">Take a Picture</button>
+                                    </div> {% endcomment %}
+                                   
+                                </div>
+                            <div class='col-md-6'>                             
+                                <div class="form-group col-lg-12 ">
+                                    <label>Employee <span style="color:red">*</span></label>
+                                    <select class="form-control select2"   id="employee-dropdown" name="employee" required>
+                                        <option value="">Choose employee</option>
+                                        {% for i in all_employee %}
+                                            <option value="{{ i.id }}">{{i.employee_code}} {{ i.first_name }} {{i.last_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-4" style="clear: both;" style="color:red">
+                                    <label>Company <span class="color_red" style="color:red">*</span></label>
+                                    <select name="company_id" id="company_ide" class="form-control" required="">
+                                        <option value="">-- Select Company  --</option>
+                                        {% for companyes in companyes %}
+                                        <option value="{{companyes.id}}">{{companyes.company_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label>Department <span class="color_red" style="color:red">*</span></label>
+                                    <select name="department_id" id="department_ide" class="form-control" required="">
+                                        <option value="">-- Select Department --</option>    
+                                        {% for departments in departmentes %}
+                                        <option value="{{departments.id}}">{{departments.department_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+    
+                                <div class="form-group col-lg-4">
+                                    <label>Location<span class="color_red" style="color:red">*</span></label>
+                                    <select name="location_id" id="location_id" class="form-control" required="">
+                                        <option value="">-- Select Location --</option> 
+                                        {% for locationes in locationes %}
+                                        <option value="{{locationes.id}}">{{locationes.location_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputDate1"> Check In Date <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="date" class="form-control"  id="datepicker" placeholder="" name="date" required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Check In Time <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepicker" placeholder="Select time" name="time" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Visitors Timing </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepickere" placeholder="Select time" name="visitors_timing">
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Other Detail</label>
+                                    <textarea class="form-control" rows="3" placeholder="Other Detail ..." name="detail"></textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Purpose <span style="color:red">*</span></label>
+                                    <textarea class="form-control" rows="3" placeholder="Purpose ..." name="Purpose" required></textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Status  <span style="color:red">*</span></label>
+                                    <select name="status" id="status" class="form-control" required="">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                    </select>
+                                </div>
+                                <!--<div class="form-group col-lg-6">-->
+                                <!--    <label>Access Card <span style="color:red">*</span></label>-->
+                                <!--    <select name="employe_API" id="employe_API" class="form-control" required>-->
+                                <!--    {% for employees in employees_without_areas.data  %}-->
+                
+                                <!--        <option value="{{employees.id}}">{{employees.first_name}}</option>-->
+                                <!--    {% endfor %}-->
+                                <!--    </select>-->
+                                <!--</div>-->
+                                <!--<div class="form-group col-lg-6">-->
+                                <!--    <label>Area </label>-->
+                                <!--    <select name="Area[]" id="emp_area" class="form-control" multiple="multiple">-->
+                                <!--    {% for area in api_data.data  %}-->
+                                <!--        <option value="{{area.id}}">{{area.area_name}}</option>-->
+                                <!--    {% endfor %}-->
+                                <!--    </select>-->
+                                <!--</div>-->
+
+                                
+                                
+                            </div>                       
+                        </div>
+                        <input type="hidden" name="user_id" value="">
+                        <div class="box-footer text-right">
+                            <button type="submit" class="btn btn-primary" id="btn_submit" disabled>Submit</button>
+                        </div>
+                    </form>
+            </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Flatpickr for timepicker
+        flatpickr("#timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // AM/PM format
+            time_24hr: false, // Use 12-hour format
+            defaultDate: new Date()
+        });
+
+        // Set the minimum date for datepicker
+        var dateInput = document.getElementById('datepicker');
+        var today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        dateInput.value = today;
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const openCameraBtn = document.querySelector('.btn-open-camera');
+        const takePictureBtn = document.querySelector('.btn-take-picture');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const imageElement = document.querySelector('#image_user img');
+        const inputElement = document.querySelector('#image_user input');
+        const context = canvas.getContext('2d');
+        let imageCount = 0; // Counter for the number of images captured
+        const capturePhotoUrl = '{% url "capture_photo" %}';
+        console.log('Capture Photo URL:', capturePhotoUrl); 
+        
+        function openCamera() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing the camera:', error);
+                    });
+                } else {
+                    console.error("Camera not supported by this browser.");
+                }
+            } catch(err) {
+                console.error('Error:', err);
+            }
+        }
+
+        function takePicture() {
+            if (imageCount < 1) { // Take pictures until 5 images are captured
+                context.drawImage(video, 0, 0, 150, 150);
+                console.log('context:', context);
+                const imageDataURL = canvas.toDataURL('image/jpeg');
+                console.log('Picture taken:', imageDataURL);
+
+                const firstNameInput = document.getElementById('Firstnames');
+                if (!firstNameInput) {
+                    console.error('Firstname input element not found.');
+                    return;
+                }
+
+                console.log('Firstname input element:', firstNameInput);
+                console.log('Firstname input value:', firstNameInput.value);
+
+                if (imageElement) {
+                    imageElement.src = imageDataURL;
+                    inputElement.value = imageDataURL;
+                    $("#image_user").show();
+                    $('#btn_submit').prop('disabled', false);
+                }
+
+                // Send the captured image data to the server using AJAX
+                /*$.ajax({
+                    url: capturePhotoUrl,
+                    type: 'POST',
+                    data: {
+                        image: imageDataURL,
+                        name: firstNameInput.value
+                    },
+                    success: function(data) {
+                        console.log('Server response:', data);
+                        // Handle the server response as needed
+                        if (data.status === 'success') {
+                            imageCount++;
+                            if (imageCount === 1) {
+                                // Close the camera after capturing 5 images
+                                video.srcObject.getTracks().forEach(track => {
+                                    track.stop();
+                                });
+                            }
+                        } else {
+                            console.error('Image capture failed.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error sending image data:', error);
+                        // Handle error
+                    }
+                });*/
+            }
+        }
+
+        openCameraBtn.addEventListener('click', openCamera);
+        takePictureBtn.addEventListener('click', takePicture);
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#emp_area').multiselect({search: true,});
+    });
+</script>
+
+
+
+<script>
+$(document).ready(function() {
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $('#mobileNumberInput').on('input', function() {
+        const inputMobile = $(this).val();
+
+        // If the input is empty, clear user fields and suggestions
+        if (inputMobile.length === 0) {
+            clearUserFields();
+            clearSuggestions();
+            return; // Exit early if input is empty
+        }
+
+        // Fetch suggestions if input is not empty
+        if (inputMobile.length >= 2) {
+            $.ajax({
+                url: '/autocomplete-mobile-numbers/',
+                type: 'GET',
+                data: { term: inputMobile },
+                success: function(data) {
+                    console.log("Fetched mobile numbers:", data); // Debugging line
+                    $('#mobileSuggestions').empty().hide();
+                    if (data.length > 0) {
+                        data.forEach(function(mobile) {
+                        const parts = mobile.split(' - '); // Assuming mobile is formatted as "number - name - id"
+                        const mobileNumber = parts[0];
+                        console.log("mobileNumber:", mobileNumber);
+                        const userId = parts[3];
+                        console.log("userId:", userId);
+                            $('#mobileSuggestions').append(`<option value="${mobileNumber}" data-id="${userId}">${mobile}</option>`);
+                        });
+                        $('#mobileSuggestions').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                }
+            });
+        } else {
+            clearSuggestions();
+        }
+    });
+    
+    
+    // Handle input in the email address field
+    $('#exampleInputEmail1').on('input', function() {
+        const inputEmail = $(this).val();
+        if (inputEmail.length === 0) {
+            clearUserFields();
+            clearSuggestions('#emailSuggestions');
+            return;
+        }
+        if (inputEmail.length >= 3) {
+            $.ajax({
+                url: '/autocomplete-emails/',  // Assuming you have an endpoint for email suggestions
+                type: 'GET',
+                data: { term: inputEmail },
+                success: function(data) {
+                    $('#emailSuggestions').empty().hide();
+                    if (data.length > 0) {
+                        data.forEach(function(email) {
+                            const parts = email.split(' - ');
+                            const emailAddress = parts[0];
+                            const userId = parts[3];
+                            $('#emailSuggestions').append(`<option value="${emailAddress}" data-id="${userId}">${email}</option>`);
+                        });
+                        $('#emailSuggestions').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                }
+            });
+        } else {
+            clearSuggestions('#emailSuggestions');
+        }
+    });
+    
+    
+    
+    //function clearSuggestions() {
+    //    $('#mobileSuggestions').empty().hide();
+    //    $('emailSuggestions').empty().hide();
+    //    $('#btn_submit').prop('disabled', true);
+    
+    //}
+    // Clear suggestion dropdowns
+    function clearSuggestions(selector) {
+       $('#mobileSuggestions').empty().hide();
+       $('#emailSuggestions').empty().hide();
+        $('#btn_submit').prop('disabled', true);
+    }
+    
+    
+<!--    $('#mobileSuggestions').on('change', function() {-->
+<!--        let selectedMobile = $(this).val();-->
+<!--        $('#mobileNumberInput').val(selectedMobile);-->
+<!--         console.log("mobileNumberInput received:", mobileNumberInput);-->
+<!--        clearSuggestions();-->
+<!--        fetchUserData(selectedMobile);-->
+<!--    });-->
+    $('#mobileSuggestions').on('change', function() {
+        let selectedMobile = $(this).val();
+        const userId = $(this).find(':selected').data('id');
+        console.log("userId received:", userId);
+        $('input[name="user_id"]').val(userId);
+        $('#mobileNumberInput').val(selectedMobile);
+        clearSuggestions();
+        fetchUserData(selectedMobile, userId);
+
+
+    });
+    // Handle change event for email suggestions
+    $('#emailSuggestions').on('change', function() {
+        let selectedEmail = $(this).val();
+        const userId = $(this).find(':selected').data('id');
+        $('input[name="user_id"]').val(userId);
+        $('#exampleInputEmail1').val(selectedEmail);
+        clearSuggestions('#emailSuggestions');
+        fetchUserDataByEmail(selectedEmail, userId);
+    });
+    function fetchUserData(mobile,userId) {
+        //const userId = $('#mobileSuggestions').find(':selected').data('id');
+        //console.log("userId received:", userId);
+        $.ajax({
+            url: '/get-user-data/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile: mobile, id: userId }),
+            success: function(response) {
+                console.log("Response received:", response);
+                if (response.success) {
+                    populateUserFields(response.user);
+                } else {
+                    $('#mobileCheckResult').text('User not found.').css('color', 'red');
+                    clearUserFields();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                $('#mobileCheckResult').text('Error fetching user data.').css('color', 'red');
+                clearUserFields();
+            }
+        });
+    }
+    // Fetch user data based on email address
+    function fetchUserDataByEmail(email, userId) {
+        $.ajax({
+            url: '/get-user-data-by-email/', // Adjust the endpoint as per your backend setup
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ email: email, id: userId }),
+            success: function(response) {
+                if (response.success) {
+                    populateUserFields(response.user);
+                } else {
+                    $('#emailCheckResult').text('User not found.').css('color', 'red');
+                    clearUserFields();
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#emailCheckResult').text('Error fetching user data.').css('color', 'red');
+                clearUserFields();
+            }
+        });
+    }
+    function populateUserFields(user) {
+        $('#Firstnames').val(user.first_name);
+        $('#exampleInputLastname1').val(user.last_name);
+        //$('#exampleInputEmail1').val(user.email);
+        if (user.email) {
+        $('#exampleInputEmail1').val(user.email);
+        $('#mobileNumberInput').val(user.mobile_number); 
+        
+        }
+
+    // Populate mobile field and clear email
+    if (user.mobile) {
+        $('#mobileNumberInput').val(user.mobile_number);
+        $('#exampleInputEmail1').val(user.email); // Clear email field
+    }
+        $('#Address').val(user.address);
+        $('#genderSelect').val(user.genderSelect.trim());
+        if (user.image) {
+            $('#userImage').attr('src', user.image).show();
+            $('#base_user_image').val(user.image);
+            $('#image_user').show();
+        } else {
+            $('#userImage').hide();
+            $('#image_user').hide(); 
+        }
+        $('#btn_submit').prop('disabled', false);
+    }
+
+    function clearUserFields() {
+        $('#Firstnames').val('');
+        $('#exampleInputLastname1').val('');
+        $('#exampleInputEmail1').val('');
+        $('#Address').val('');
+        $('#userImage').attr('src', '').hide();
+        $('#genderSelect').val('');
+        $('#mobileCheckResult').text(''); // Clear the result message
+        window.location.reload();
+
+    }
+});
+</script>

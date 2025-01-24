@@ -1,0 +1,179 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<div class="content-wrapper">
+    <div style="padding:10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Report Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">User Management</li>
+      </ol>
+    </section>
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box" style='display: inline-block;'>
+            <div class="box-header"></div>
+            <div class='col-lg-12'>
+                <form id="filterForm" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="reservation">Date:</label>
+                                <input type="text" id="reservation" name="date" class="form-control " required>
+                                {% comment %} <input type="date" class="form-control pull-right" id="reservation"> {% endcomment %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="department">Department:</label>
+                                <select id="department" name="department" class="form-control" required>
+                                    <option value="">Select Department</option>
+                                    {% for department in departments %}
+                                        <option value="{{ department.id }}">{{ department.department_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="visitor_type">Visitor Type:</label>
+                                <select id="visitor_type" name="visitor_type" class="form-control" required>
+                                    <option value="">Select Visitor Type</option>
+                                    <option value="candidate">Candidate</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="general">General</option>
+                                    <option value="government officer">Government Officer</option>
+                                    <option value="interviewer">Interviewer</option>
+                                    <option value="vender">Vendor</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class='col-md-3'>
+                            <button type="button" id="filterButton" class="btn btn-primary">Filter</button>
+                        </div>           
+                </form>
+            </div>    
+
+            <div class='col-lg-12'>
+                <div class="table-responsive" style="margin: 10px;">
+                <table id="user_table" class="table table-bordered table-striped" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Visitor Name</th>
+                            <th>Visitor ID</th>
+                            <th>Image</th>
+                            <th>TO Meet</th>
+                            <th>Visitor Email</th>
+                            <th>Visitor MObile</th>
+                            <th>Company</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Check-In Time</th>
+                            <th>Check-Out Time</th>
+                            <th>Visitor Type</th>
+                            {% comment %} <th>Status</th> {% endcomment %}
+                        </tr>
+                    </thead>
+                </table>
+                {% csrf_token %} 
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script src="{% static 'dist/js/pages/user_delete.js' %}" type="text/javascript"></script>
+<script>
+    $(function() {
+        $('#reservation').daterangepicker({
+            format: 'MM/DD/YYYY', // Ensure this matches the format used in the view
+            //opens: 'Right'
+        });
+
+        var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                }
+            }
+        });
+
+        var ajaxUrl = "{% url 'admin_report' %}";
+
+        var table = $('#user_table').DataTable({
+            "ajax": {
+                "url": ajaxUrl,
+                "type": "POST",
+                "data": function(d) {
+                    d.date = $('#reservation').val();
+                    d.department = $('#department').val();
+                    d.visitor_type = $('#visitor_type').val();
+                }
+            },
+            "columns": [
+                { data: 'id'},
+                {
+                    data: null,  // Set data to null when using a custom render function
+                    render: function(data, type, row) {
+                        return row.visitors_first_name + ' ' + row.visitors_last_name;
+                    }
+                },
+                { data: 'visitors_uni_id'},
+                {
+                    data: 'visitors_image',
+                    render: function(data, type, row) {
+                        let imageUrl = data ? '{{IMAGEPATH}}' + data : '{{DEFAULT_IMAGE}}';
+                        return '<img src="' + imageUrl + '" alt="Visitor Image" width="50" height="50"/>';
+                    }
+                },
+                { data: 'employee_first_name'},
+                { data: 'visitors_email'},
+                { data: 'visitors_mobile'},
+                { data: 'company_name'},
+                { data: 'department_name'},
+                { data: 'location_name'},
+                { data: 'check_in_time'},
+                { data: 'check_out_time'},
+                { data: 'visitors_type'},
+            ],
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "ordering": false,
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            layout: {
+                topStart: {
+                    buttons: ['csv', 'pageLength']
+                }
+            }
+        });
+
+        $('#filterButton').on('click', function() {
+            table.ajax.reload();
+        });
+    });
+</script>

@@ -1,0 +1,164 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;" >
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Profile Edit
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Profile Edit</li>
+      </ol>
+    </section>
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-6 col-xs-6">
+        <div class="box box-primary">
+            <form role="form" method="POST" enctype="multipart/form-data" action="">
+                {% csrf_token %}
+                <div class="box-body">
+                    <div class ='col-md-6'>
+                        <div class="form-group">
+                            {% if admin_user.image %}
+                                <img src="{{ user_data.users_images }}{{ admin_user.image.url }}" alt="Visitor Image" style="width: 100px; height: 97px;" >
+                            {% else %}
+                                <img src="{{ user_data.default_image}}" alt="Default Image">
+                            {% endif %} 
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class ='col-md-6'>                        
+                        <div class="form-group">
+                            <label for="exampleInputFile">Profile Image </label>
+                            <input type="file" id="exampleInputFile" class='form-control'  name="image">  
+                        </div>
+                    </div>    
+                    <div class="form-group">
+                        <label for="exampleInputFirstname1">First name <span style="color:red">*</span></label>
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" id="exampleInputFirstname1" placeholder="Enter Firstname" name="Firstname" value='{{admin_user.first_name}}' required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputLastname1">Last name <span style="color:red">*</span></label>
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname" value='{{admin_user.last_name}}' required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address <span style="color:red">*</span></label>
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="Email" value='{{admin_user.email}}' required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password </label>
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputConfirmPassword1">Confirm Password </label>
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Employee Id</label>
+                        <div class="input-group col-md-12">
+                        <input type="type" class="form-control" id="employee_id" placeholder="Employee Id" name="employee_id" value='{{admin_user.employee_code}}' required disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address <span style="color:red">*</span></label>
+                        <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" required>{{admin_user.address}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number <span style="color:red">*</span></label>
+                        <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number" pattern="[0-9]*" maxlength= "11" minlength= "10" inputmode="numeric" name="mobile" value='{{admin_user.mobile}}' required oninput="validateNumericInput(this)">
+                        </div><!-- /.input group -->
+                    </div>
+                    <div class="form-group">
+                        <label>Choose Gender <span style="color:red">*</span></label>
+                        <select class="form-control" name="gender" required>
+                            <option>Choose Gender</option>    
+                            <option value="Male"{% if admin_user.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if admin_user.gender == 'Female' %}selected{% endif %}>Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        {% if admin_user.document %}
+                            {% with file_extension=admin_user.document.name|slice:'-4:' %}
+                                {% if file_extension == '.pdf' %}
+                                    <p>Uploaded Document:
+                                        <a href="{{user_data.document}}{{ admin_user.document.url }}" target="_blank">
+                                             {{ admin_user.document.name }}
+                                        </a>
+                                    </p>
+                                {% elif file_extension in '.jpg .png .jpeg' %}
+                                    <p>Uploaded Image:
+                                        <a href="{{user_data.document}}{{ admin_user.document.url }}" target="_blank">
+                                            <img src="{{user_data.document}}{{ admin_user.document.url }}" alt="Uploaded Image" style="width: 100px; height: auto;">
+                                        </a>
+                                        <br>
+                                        {{ admin_user.document.name }}
+                                    </p>
+                                {% else %}
+                                    <p>Uploaded Document:
+                                        <a href="{{user_data.document}}{{ admin_user.document.url }}" target="_blank">
+                                            {{ admin_user.document.name }}
+                                        </a>
+                                    </p>
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            <p>No document uploaded.</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">Upload Document</label>
+                        <input type="file" id="exampleInputFile" class='form-control'  name="document">
+                    </div>
+
+                    <div class="box-footer text-right">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        {% comment %} <button type="reset" class="btn btn-secondary" onclick="window.history.back();">Cancel</button> {% endcomment %}
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>            
+      </div><!-- ./col -->
+    </div><!-- /.row -->
+    <!-- Main row -->
+</section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}

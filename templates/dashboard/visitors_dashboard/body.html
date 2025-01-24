@@ -1,0 +1,100 @@
+
+{% load static %}
+{% block content  %}
+<body class="skin-blue">
+    <div class="wrapper">
+      
+      <header class="main-header">
+        <!-- Logo -->
+        {% comment %} <a href="index2.html" class="logo" style="position:fixed"><b>Visitors</b></a> {% endcomment %}
+        <b class="logo" style="position:fixed"><b>Visitors</b></b>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="hidden-xs" style="text-transform: capitalize;">{{user_data.user_name}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    {% if user_data.image  %}
+                        <img src="{{ user_data.users_images  }}{{ user_data.image }}" alt="Visitor Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% else %}
+                        <img src="{{user_data.default_image}}" alt="Default Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% endif %} 
+                    {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+                    <p style="text-transform: capitalize;">
+                      {{user_data.user_name}}
+<!--                      <small>Member since Nov. 2012</small>-->
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      <a href="{%url 'visitors_edit' %}" class="btn btn-default btn-flat">Profile</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="{% url 'visitors_logout' %}" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="position:fixed">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              {% if user_data.image %}
+                  <img src="{{ user_data.users_images }}{{ user_data.image }}" alt="Visitor Image" style="width: 50px; height: 50px;" class="img-circle">
+              {% else %}
+                  <img src="{{user_data.default_image}}" alt="Default Image" class="img-circle">
+              {% endif %}
+              {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+            </div>
+            <div class="pull-left info" style="text-transform: capitalize;">
+              <p>{{user_data.user_name}}</p>
+
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+            
+          </div>
+          <!-- search form -->
+          
+          <!-- /.search form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          
+          <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="treeview">
+              <a href="{%url 'visitors_dashboard' %}">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-edit"></i> <span>Appointment</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'visitors_appointment' %}"><i class="fa fa-circle-o"></i> All Appointment </a></li>
+                {% comment %} <li><a href="{% url 'visitors_appointment_upcoming_appointment' %}"><i class="fa fa-circle-o"></i> Upcoming Appointment</a></li> {% endcomment %}
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+{% endblock content  %}

@@ -1,0 +1,205 @@
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+
+<div class="content-wrapper">
+    <div style="padding:10px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <section class="content-header">
+        <h1>
+            Visitor Management
+            <small>Control panel</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">All Visitors</li>
+        </ol>
+    </section>
+    
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="table-responsive" style="margin: 10px;">
+                        <table id="appointment_table" class="table table-bordered table-striped" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Email</th>
+                                    <th>Image</th>
+                                    <th>Mobile</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                    <th>Purpose</th>
+                                    <th>Details</th>
+                                    <th>Visitor Type</th>
+                                    <th>Check-In Time</th>
+                                    <th>Check-Out Time</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td>{{ result.id|default:"N/A" }}</td>
+                                    <td>{{ result.visitors_first_name|default:"N/A" }}</td>
+                                    <td>{{ result.visitors_email|default:"N/A" }}</td>
+                                    <td>
+                                        <img src="{{ result.visitors_image|default:'/path/to/placeholder_image.jpg' }}" alt="Visitor Image" width="50" height="50">
+                                    </td>
+                                    <td>{{ result.visitors_mobile|default:"N/A" }}</td>
+                                    <td>{{ result.date|default:"N/A" }}</td>
+                                    <td>{{ result.time|default:"N/A" }}</td>
+                                    <td>{{ result.status|default:"N/A" }}</td>
+                                    <td>{{ result.created_at|default:"N/A" }}</td>
+                                    <td>{{ result.updated_at|default:"N/A" }}</td>
+                                    <td>{{ result.purpose|default:"N/A" }}</td>
+                                    <td>{{ result.detail|default:"N/A" }}</td>
+                                    <td>{{ result.visitors_type|default:"N/A" }}</td>
+                                    <td>{{ result.check_in_time|default:"N/A" }}</td>
+                                    <td>{{ result.check_out_time|default:"N/A" }}</td>                              
+                                    <td>
+                                        <button class="btn btn-success" data-appointment-id="{{ result.id }}" onclick="changeStatus('{{ result.id }}', 'accepted')" ><i class="fa fa-fw fa-eye" title='View'></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% csrf_token %}
+                    </div>
+                    <div class="pagination-container">
+                        <div class="data-info">
+                            Showing {{ start_index }} to {{ end_index }} of {{ total_entries }} entries
+                        </div>
+                        <div class="pagination-wrapper">
+                            <ul class="pagination">
+                                {% if pagination.current_page > 1 %}
+                                    <li class="page-item"><a class="page-link" href="?page=1">« First</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.current_page|add:"-1" }}">‹ Previous</a></li>
+                                {% endif %}
+                    
+                                {% for page_num in page_range %}
+                                    <li class="page-item {% if pagination.current_page == page_num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    </li>
+                                {% endfor %}
+                    
+                                {% if pagination.current_page < pagination.last_page %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.current_page|add:"1" }}">Next ›</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.last_page }}">Last »</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+
+<!-- Modal for displaying visitor details -->
+<div class="modal fade" id="visitorModal" tabindex="-1" role="dialog" aria-labelledby="visitorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="visitorModalLabel">Visitor Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tbody id="visitor-details-body">
+                        <!-- Dynamic content will be injected here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var DOMIN_PATH = "{{ DOMIN_PATH }}";
+    $(document).ready(function() {
+        $('#appointment_table').DataTable({
+            "paging": false,
+            "info": false,
+			"order": [[0, 'desc']]
+        });
+
+        $('#print-button').on('click', function() {
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(document.querySelector('.table-responsive').innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        });
+
+        $('.btn-success').on('click', function() {
+            var appointmentId = $(this).attr('data-appointment-id');
+            $.ajax({
+                url: '/api/visitore_detail',
+                type: 'POST',
+                data: {
+                    'appointment_id': appointmentId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.status === "true") {
+                        var data = response.data[0];
+                        var appointmentReason = response.appointment_reason[0];
+
+                        // Populate the modal with data
+                        var modalContent = `
+                            <tr><td><strong>ID:</strong></td><td>${data.id}</td></tr>
+                            <tr><td><strong>Visitor Name:</strong></td><td>${data.visitor_first_name}</td></tr>
+                            <tr><td><strong>Email:</strong></td><td>${data.visitor_email}</td></tr>
+                            <tr><td><strong>Mobile:</strong></td><td>${data.visitor_mobile}</td></tr>
+                            <tr><td><strong>Image:</strong></td><td><img src="${data.visitors_image}" alt="Visitor Image" class="visitor-image" style="width: 100px; height: 100px;"></td></tr>
+                            <tr><td><strong>Purpose:</strong></td><td>${data.purpose}</td></tr>
+                            <tr><td><strong>Details:</strong></td><td>${data.detail}</td></tr>
+                            <tr><td><strong>Visitor Type:</strong></td><td>${data.visitors_type}</td></tr>
+                            <tr><td><strong>Check-In Time:</strong></td><td>${data.check_in_time}</td></tr>
+                            <tr><td><strong>Check-Out Time:</strong></td><td>${data.check_out_time}</td></tr>`;
+
+                        if (data.status === "rejected") {
+                            modalContent += `
+                            <tr><td><strong>Appointment Reason:</strong></td><td>${appointmentReason.appointment_reason}</td></tr>
+                            <tr><td><strong>Appointment Date:</strong></td><td>${appointmentReason.appointment_date}</td></tr>
+                            <tr><td><strong>Appointment Time:</strong></td><td>${appointmentReason.appointment_time}</td></tr>`;
+                        }
+
+                        $('#visitor-details-body').html(modalContent);
+                        $('#visitorModal').modal('show');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred. Please try again later.');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,150 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        Add New Area
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Add New Areas</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Add New Areas</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="image">Image (PNG, JPG, JPEG):</label>
+                            <input type="file" name="image" accept=".png, .jpg, .jpeg" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="favicon">Favicon (ICO):</label>
+                            <input type="file" name="favicon" accept=".ico" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website_name">Website Name:</label>
+                            <input type="text" name="website_name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website_link">Website Link:</label>
+                            <input type="url" name="website_link" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="copyright">Copyright:</label>
+                            <input type="text" name="copyright" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="w_email">Email:</label>
+                            <input type="email" name="w_email" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="w_user">Username:</label>
+                            <input type="text" name="w_user" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="w_password">Password:</label>
+                            <input type="password" name="w_password" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="w_from_name">From Name:</label>
+                            <input type="text" name="w_from_name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="w_from_email">From Email:</label>
+                            <input type="email" name="w_from_email" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="whatsapp_notification">whatsapp notification </label>
+                            <button class="btn btn-primary" type="button">Button</button>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="box-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script type="text/javascript">
+    $("#country-dropdown").change(function () {
+        var url = "{% url 'admin_location_ajax_load_states' %}"; // get the url of the `load_states` view
+        var countryId = $(this).val(); // get the selected country ID from the HTML input
+
+        $.ajax({
+            url: url,
+            data: {
+                'country_id': countryId // add the country ID to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_states` view function
+                $("#state-dropdown").html('<option value="">-- Select State --</option>');
+                $("#city-dropdown").html('<option value="">-- Select City --</option>'); // Clear city dropdown
+                $.each(data, function (key, value) {
+                    $("#state-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+    $("#state-dropdown").change(function () {
+        var url = "{% url 'admin_location_ajax_load_cities' %}"; // get the url of the `load_cities` view
+        var stateId = $(this).val(); // get the selected state ID from the HTML input
+
+        $.ajax({
+            url: url,
+            data: {
+                'state_id': stateId // add the state ID to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#city-dropdown").html('<option value="">-- Select City --</option>');
+                $.each(data, function (key, value) {
+                    $("#city-dropdown").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,293 @@
+
+{% load static %}
+{% block content  %}
+
+
+<body class="skin-blue">
+    <div class="wrapper">
+      
+      <header class="main-header">
+        <!-- Logo -->
+        {% comment %} <a href="index2.html" class="logo" style="position:fixed"><b>Admin</b></a> {% endcomment %}
+        <b class="logo" style="position:fixed"><b>Admin</b></b>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- User Account: style can be found in dropdown.less --> 
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="hidden-xs" style="text-transform: capitalize;">{{admin_data.user_name}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    {% if admin_data.image  %}
+                        <img src="{{ admin_data.users_images  }}{{ admin_data.image }}" alt="Visitor Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% else %}
+                        <img src="{{admin_data.default_image}}" alt="Default Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% endif %} 
+                    {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+                    <p style="text-transform: capitalize;">
+                      {{admin_data.user_name}}
+<!--                      <small>Member since Nov. 2012</small>-->
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      {% if admin_data.id != 0 %}
+                        <a href="{% url 'admin_edit' %}" class="btn btn-default btn-flat">Profile</a>
+                    {% else %}
+                    {% endif %}
+                    </div>
+                    <div class="pull-right">
+                      <a href="{% url 'admin_logout' %}" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="position:fixed">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              {% if admin_data.image %}
+                  <img src="{{ admin_data.users_images }}{{ admin_data.image }}" alt="Visitor Image" style="width: 50px; height: 50px;" class="img-circle">
+              {% else %}
+                  <img src="{{admin_data.default_image}}" alt="Default Image" class="img-circle">
+              {% endif %}
+              {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+            </div>
+            <div class="pull-left info" style="text-transform: capitalize;">
+              <p>{{admin_data.user_name}}</p>
+
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+          </div>
+          <!-- search form -->
+          <!-- /.search form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          
+          <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="treeview">
+              <a href="{% url 'admin_dashboard' %}">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="treeview menu-open">
+        <a href="#">
+          <i class="fa fa-gears"></i> <span>Masters</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+
+          <!-- Role Master Start -->
+        <li class="treeview  menu-open">
+              <a href="#">
+                <i class="fa fa-sitemap"></i> <span>Roles</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="">
+                  <a href="{% url 'admin_role_all' %}"><i class="fa fa-circle-o text-aqua"></i> All Roles</a>
+                </li>
+                                  <li class="">
+                    <a href="{% url 'admin_role_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Role</a>
+                  </li>
+                              </ul>
+            </li>
+
+                      <li class="treeview ">
+              <a href="#">
+                <i class="fa fa-map-marker"></i> <span>Location</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="">
+                  <a href="{% url 'admin_location' %}"><i class="fa fa-circle-o text-aqua"></i> All Locations</a>
+                </li>
+                                  <li class="">
+                    <a href="{% url 'admin_location_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Location</a>
+                  </li>
+                              </ul>
+            </li>
+                    <!-- Location Master End -->
+
+          <!-- Area Master Start -->
+                      <li class="treeview ">
+              <a href="#">
+                <i class="fa fa-globe"></i> <span>Area</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="">
+                  <a href="{% url 'admin_area' %}"><i class="fa fa-circle-o text-aqua"></i> All Areas</a>
+                </li>
+                                  <li class="">
+                    <a href="{% url 'admin_area_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Area</a>
+                  </li>
+                              </ul>
+            </li>
+                    <!-- Area Master End -->
+
+          <!-- Company Master Start -->
+                      <li class="treeview ">
+              <a href="#">
+                <i class="fa fa-building"></i> <span>Company</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="active">
+                  <a href="{% url 'admin_company' %}"><i class="fa fa-circle-o text-aqua"></i> All Companies</a>
+                </li>
+                                  <li class="">
+                    <a href="{% url 'admin_company_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Company</a>
+                  </li>
+                              </ul>
+            </li>
+                    <!-- Company Master end -->
+
+          <!-- Department Master Start -->
+                      <li class="treeview ">
+              <a href="#">
+                <i class="fa fa-home"></i> <span>Department</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="">
+                  <a href="{% url 'admin_department' %}"><i class="fa fa-circle-o text-aqua"></i> All Department</a>
+                </li >
+                                  <li class="">
+                    <a href="{% url  'admin_department_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Department</a>
+                  </li>
+                              </ul>
+            </li>
+            
+                    <!-- Department Master end -->
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-level-up"></i> <span>Designation</span>
+                <i class="fa fa-angle-left pull-right"></i>
+
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'admin_designation' %}"><i class="fa fa-circle-o text-aqua"></i> All Designation</a></li>
+                <li><a href="{% url 'admin_designation_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New Designation</a></li>
+              </ul>
+            </li>
+        </ul>
+      </li>
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-user"></i> <span>Users</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+          <li class="">
+            <a href="{% url 'admin_user'%}"><i class="fa fa-circle-o text-aqua"></i> All Users</a>
+          </li>
+                        <li class="active">
+              <a href="{% url 'admin_user_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add New User</a>
+            </li>
+                    </ul>
+
+      </li>
+      <li class="treeview  menu-open">
+        <a href="#">
+          <i class="fa fa-sitemap"></i> <span>Auto Email</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li class="">
+            <a href="{% url 'auto_email' %}"><i class="fa fa-circle-o text-aqua"></i> Auto Email</a>
+          </li>
+                           
+                        </ul>
+      </li>
+      <li class="treeview  menu-open">
+        <a href="#">
+          <i class="fa fa-sitemap"></i> <span>Report</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a> 
+        <ul class="treeview-menu">
+          <li class="">
+            <a href="{% url 'admin_report' %}"><i class="fa fa-circle-o text-aqua"></i> Report</a>
+          </li>
+         </ul>
+      </li>
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-user"></i> <span>Visitor</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+          <li class="">
+            <a href="{% url 'admin_visitor'%}"><i class="fa fa-circle-o text-aqua"></i> All Appointment</a>
+          </li>
+          <li class="">
+            <a href="{% url 'admin_visitor_user'%}"><i class="fa fa-circle-o text-aqua"></i>All Registered Users</a>
+          </li>
+                    </ul>
+
+      </li>
+
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-user"></i> <span>Safety Training</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+          <li class="">
+            <a href="{% url 'admin_safety_training'%}"><i class="fa fa-circle-o text-aqua"></i> All Safety Training</a>
+          </li>
+                        <li class="active">
+              <a href="{% url 'admin_safety_training_add' %}"><i class="fa fa-circle-o text-aqua"></i> Add Safety Training</a>
+            </li>
+                    </ul>
+
+      </li>
+      <li class="treeview">
+              <a href="{% url 'admin_setting_update' %}">
+                <i class="fa fa-cog"></i> <span>Setting</span>
+
+              </a>
+            </li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+{% endblock content  %}

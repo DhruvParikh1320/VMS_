@@ -1,0 +1,242 @@
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+<div class="content-wrapper">
+    <div style="padding:10px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <section class="content-header">
+        <h1>
+            Visitor Management
+            <small>Control panel</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">All Visitors</li>
+        </ol>
+    </section>
+    
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="modal fade" id="rejectionModal" tabindex="-1" role="dialog" aria-labelledby="rejectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rejectionModalLabel">Reject Appointment</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="rejectionForm">
+                                        <input type="hidden" id="appointmentId" name="appointment_id">
+                                        <div class="form-group">
+                                            <label for="reason">Reason</label>
+                                            <input type="text" class="form-control" id="reason" name="reason" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="date">Date</label>
+                                            <input type="date" class="form-control" id="datepicker" name="date" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="time">Time</label>
+                                            <input type="text" class="form-control" id="timepicker" name="time" required>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="submitRejection">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} <div class="box-header">
+                        <button id="print-button" class="btn btn-primary" style="margin: 10px;">Print</button>
+                    </div> {% endcomment %}
+                    
+                    <div class="table-responsive" style="margin: 10px;">
+                        
+                        <table id="appointment_table" class="table table-bordered table-striped" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Email</th>
+                                    <th>Image</th>
+                                    <th>Mobile</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                    <th>Purpose</th>
+                                    <th>Details</th>
+                                    <th>Visitor Type</th>
+                                    <th>ACTION</th>
+                                    
+                                    
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td>{{ result.id }}</td>
+                                    <td>{{ result.visitors_first_name }}</td>
+                                    <td>{{ result.visitors_email }}</td>
+                                    <td><img src="{{ result.visitors_image }}" alt="Visitor Image" width="50" height="50"></td>
+                                    <td>{{ result.visitors_mobile }}</td>
+                                    <td>{{ result.date }}</td>
+                                    <td>{{ result.time }}</td>
+                                    <td>{{ result.status }}</td>
+                                    <td>{{ result.created_at }}</td>
+                                    <td>{{ result.updated_at }}</td>
+                                    <td>{{ result.purpose }}</td>
+                                    <td>{{ result.detail }}</td>
+                                    <td>{{ result.visitors_type }}</td>                                 
+                                    <td>
+                                        <button class="btn btn-success" onclick="changeStatus('{{ result.id }}', 'accepted')" ><i class="fa fa-fw fa-check-square" title='Accept'></i></button>
+                                        <button class="btn btn-danger" onclick="openRejectionModal('{{ result.id }}')"><i class="fa fa-fw fa-times-circle" title='Reject'></i></button>
+                                    </td>                                  
+                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% csrf_token %}
+                    </div>
+                    <div class="pagination-container">
+                        <div class="data-info">
+                            Showing {{ start_index }} to {{ end_index }} of {{ total_entries }} entries
+                        </div>
+                        <div class="pagination-wrapper">
+                            <ul class="pagination">
+                                {% if pagination.current_page > 1 %}
+                                    <li class="page-item"><a class="page-link" href="?page=1">« First</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.current_page|add:"-1" }}">‹ Previous</a></li>
+                                {% endif %}
+                    
+                                {% for page_num in page_range %}
+                                    <li class="page-item {% if pagination.current_page == page_num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    </li>
+                                {% endfor %}
+                    
+                                {% if pagination.current_page < pagination.last_page %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.current_page|add:"1" }}">Next ›</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ pagination.last_page }}">Last »</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    $(document).ready(function() {
+        $('#appointment_table').DataTable({
+            "paging": false,  // Set to false because pagination is handled manually
+            "info": false,      // Disable DataTables info as we use custom info
+        });
+    
+        $('#print-button').on('click', function() {
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(document.querySelector('.table-responsive').innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        });
+    });
+    
+    flatpickr("#timepicker", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "h:i K", // AM/PM format
+        time_24hr: false // Use 12-hour format
+    });
+    
+    var dateInput = document.getElementById('datepicker');
+    var today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    
+    function openRejectionModal(appointmentId) {
+        console.log('Opening rejection modal for appointment ID:', appointmentId); // Debugging line
+        $('#appointmentId').val(appointmentId);
+        $('#rejectionModal').modal('show');
+    }
+    
+    function changeStatus(appointmentId, status) {
+        $.ajax({
+            url: '/api/status_changes',
+            type: 'POST',
+            data: {
+                'appointment_id': appointmentId,
+                'status': status,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'true') {
+                    alert('Status updated successfully.');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            }
+            
+        });
+    }
+    
+    $('#submitRejection').click(function() {
+        var appointmentId = $('#appointmentId').val();
+        var reason = $('#reason').val();
+        var date = $('#datepicker').val();
+        var time = $('#timepicker').val();
+    
+        $.ajax({
+            url: '/api/status_changes',
+            type: 'POST',
+            data: {
+                'appointment_id': appointmentId,
+                'status': 'rejected',
+                'reason': reason,
+                'date': date,
+                'time': time,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.status === 'true') {
+                    alert('Status updated successfully.');
+                    location.reload(); // Refresh the page to reflect changes
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            }
+            
+        });
+    
+        $('#rejectionModal').modal('hide');
+    });
+</script>
+
+<script>

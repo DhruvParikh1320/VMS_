@@ -1,0 +1,169 @@
+{% load static %}
+{% include 'dashboard/gate_keeper_dashboard/header.html' %}
+{% include 'dashboard/gate_keeper_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding:10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Visitor
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Visitor</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-12">
+          
+          <div class="box">
+          <div class="box-header">
+          </div>
+          <div class="table-responsive" style="margin: 10px;">
+            <table id="appointment_table" class="table table-bordered table-striped" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>VISITOR NAME</th>
+                    <th>IMAGE</th>
+                    <th>VISITOR ID</th>
+                    <th>EMAIL</th>
+                    <th>MOBILE</th>
+                    <th>GENDER</th>
+                    <th>ADDRESS</th>
+                    <th>USER CREATED BY</th>
+                    <th>CREATED AT</th>
+                    <th>UPDATED AT</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+
+            </table>
+            {% csrf_token %}
+
+      </div>
+</section>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<!--<script type="text/javascript">-->
+<!--  $(function () {-->
+<!--    $('#appointment_table').dataTable();-->
+<!--  });-->
+<!--</script>-->
+<script>
+  $(document).ready(function() {
+    // Retrieve CSRF token value from the hidden input
+    var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+    console.log("CSRF Token: ", csrfToken);
+
+    // Set up AJAX to include the CSRF token in the headers for non-GET requests
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set in header: ", csrfToken);
+            }
+        }
+    });
+
+    // Define the AJAX URL, ensure it's correctly rendered
+    var ajaxUrl = "{% url 'gate_keeper_user_page_ajax' %}";
+    console.log("AJAX URL: ", ajaxUrl);
+
+    // Initialize DataTable with server-side processing
+    $('#appointment_table').DataTable({
+        "ajax": {
+            "url": ajaxUrl,
+            "type": "POST"
+        },
+        "columns": [
+            { data: 'id'},
+            {
+              data: null, // Use null data to indicate that we are not using a direct field
+              render: function(data, type, row) {
+                  return row.first_name + ' ' + row.last_name;
+              }
+            },
+
+            {
+              data: 'image',
+              render: function(data, type, row) {
+                  let imageUrl = data ? '{{IMAGEPATH}}' + data : '{{DEFAULT_IMAGE}}';
+                  return '<img src="' + imageUrl + '" alt="Visitor Image" width="50" height="50"/>';
+              }
+            },
+            {data : 'uni_id'},
+            { data : 'email'},
+            { data : 'mobile'},
+            { data : 'gender'},
+            {data :'address'},
+            {
+              data: null, // Use null data to indicate that we are not using a direct field
+              render: function(data, type, row) {
+                  // Check if created_by_first_name and created_by_last_name are available
+                  if (row.created_by_first_name && row.created_by_last_name) {
+                      return row.created_by_first_name + ' ' + row.created_by_last_name;
+                  } else {
+                      // Fallback to row.first_name and row.last_name
+                      return row.first_name + ' ' + row.last_name;
+                  }
+              }
+            },
+            { data : 'created_at'},
+            { data : 'updated_at'},
+            {
+                data: null,
+                render: function(data, type, row) {
+                    var editUrl = "{% url 'gate_keeper_user_new_appointment' 0 %}".replace('0', row.id);
+
+                    var editButton = '<a title="NEW APPOINTMENT" href="' + editUrl + '" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-plus-square"></i></a>';
+
+                    return editButton;
+                }
+            },
+        ],
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "ordering": false,
+        lengthMenu: [
+            [10, 25, 50, 100],
+            [10, 25, 50, 100]
+        ],
+        
+        layout: {
+            topStart: {
+                buttons: ['csv','pageLength']
+            }
+       },
+    });
+});
+  
+  
+  </script>

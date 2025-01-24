@@ -1,0 +1,587 @@
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+
+<style>
+    #mobileSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0; /* Align to the left */
+        right: 0; /* Allow the right edge to be fluid */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 179px;
+        overflow-y: auto;
+        z-index: 1001;
+        display: none;
+        width: 100%; /* Full width for responsiveness */
+    }
+
+    #mobileSuggestions option {
+        padding: 10px; /* Spacing inside each option */
+        cursor: pointer; /* Pointer cursor for options */
+    }
+
+    #mobileSuggestions option:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        #mobileSuggestions {
+            max-width: 90%; /* Limit width to 90% on smaller screens */
+            left: 5%; /* Center it with some padding */
+            right: 5%; /* Center it with some padding */
+        }
+    }
+
+    @media (max-width: 576px) {
+        #mobileSuggestions {
+            max-height: 150px; /* Adjust max-height for very small screens */
+        }
+    }
+</style>
+
+
+<style>
+    #emailSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0; /* Align to the left */
+        right: 0; /* Allow the right edge to be fluid */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 179px;
+        overflow-y: auto;
+        z-index: 1001;
+        display: none;
+        width: 100%; /* Full width for responsiveness */
+    }
+
+    #emailSuggestions option {
+        padding: 10px; /* Spacing inside each option */
+        cursor: pointer; /* Pointer cursor for options */
+    }
+
+    #emailSuggestions option:hover {
+        background-color: #f0f0f0; /* Highlight on hover */
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 768px) {
+        #emailSuggestions {
+            max-width: 90%; /* Limit width to 90% on smaller screens */
+            left: 5%; /* Center it with some padding */
+            right: 5%; /* Center it with some padding */
+        }
+    }
+
+    @media (max-width: 576px) {
+        #emailSuggestions {
+            max-height: 150px; /* Adjust max-height for very small screens */
+        }
+    }
+</style>
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Add Appointment
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Add Appointment</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Quick Add Appointment</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                    <form role="form" method="POST" enctype="multipart/form-data" action="" autocomplete="off">
+                        {% csrf_token %}
+                        
+                        <div class="box-body">
+                            <div class='row'>
+                                <div class='col-md-6'>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputFirstname1">First Name</label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control" id="exampleInputFirstname1" placeholder="Enter Firstname" name="Firstname">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputLastname1">Last Name</label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputEmail1">Email Address<span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="Email" required>
+                                        <select id="emailSuggestions" class="form-control" size="10" style="display: none;"></select>
+                                        </div>
+                                    </div>
+                
+                                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">-->
+                                    <!--    <label for="exampleInputPassword1">Password <span style="color:red">*</span></label>-->
+                                    <!--    <div class="input-group">-->
+                                    <!--    <span class="input-group-addon"><i class="fa fa-lock"></i></span>-->
+                                    <!--    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" required>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">-->
+                                    <!--    <label for="exampleInputConfirmPassword1">Confirm Password <span style="color:red">*</span></label>-->
+                                    <!--    <div class="input-group">-->
+                                    <!--    <span class="input-group-addon"><i class="fa fa-lock"></i></span>-->
+                                    <!--    <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password" required>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Mobile Number</label>
+                                        <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number"pattern="[0-9]*" inputmode="numeric" name="mobile" minlength='10' maxlength='11' oninput="validateNumericInput(this)">
+                                        <select id="mobileSuggestions" class="form-control" size="10" style="display: none;"></select>
+                                        </div><!-- /.input group -->
+                                    </div>
+                                    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Gender</label>
+                                        <select class="form-control" name="gender" id="genderSelect">
+                                        <option value="">Choose Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group col-lg-12 ">
+                                    	<label>Visitors Type</label>
+                                    	<select class="form-control" name="visitors_type">
+                                        	<option value="">Choose visitors type</option>
+                                        	<option value="candidate ">Candidate </option>
+                                        	<option value="customer">Customer</option>
+                                        	<option value="general">General</option>
+                                        	<option value="government officer">Government Officer</option>
+                                        	<option value="interviewer">Inter viewer</option>
+                                        	<option value="vendor">vendor</option>
+                                        	<option value="other">Other</option>
+                                    	</select>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label>Address</label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" id="Address"></textarea>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputFile">Profile Image</span></label>
+                                        <input type="file" id="exampleInputFile"  name="image" class="form-control" accept=".png, .jpg, .jpeg">
+                                    </div>
+                                    <div class='col-lg-12'>
+                                        <div class="form-group" id='image_user' style='display:none'>                                        
+                                            <img src="" alt="" width="150" height="150" id="userImage">
+                                            <input type="hidden" value="" id="base_user_image" name='user_image'>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            <div class='col-md-6'>                             
+                                <div class="form-group col-lg-12 ">
+                                    <label>Employee <span style="color:red">*</span></label>
+                                    <select class="form-control select2" name="employee_id" id="employee-dropdown" required>
+                                        <option value="">-- Select Employee --</option>
+                                        {% for i in all_employee %}
+                                            <option value="{{ i.id }}">{{i.employee_code}} {{ i.first_name }} {{ i.last_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                
+				            <div class="form-group col-lg-4" style="clear: both;" style="color:red">
+                                        <label>Company <span class="color_red" style="color:red">*</span></label>
+                                        <select name="company_id" id="company_ide" class="form-control" required="">
+                                            <option value="">-- Select Company  --</option>
+                                            {% for companyes in companyes %}
+                                            <option value="{{companyes.id}}">{{companyes.company_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-4">
+                                        <label>Department <span class="color_red" style="color:red">*</span></label>
+                                        <select name="department_id" id="department_ide" class="form-control" required="">
+                                            <option value="">-- Select Department --</option>    
+                                            {% for departments in departmentes %}
+                                            <option value="{{departments.id}}">{{departments.department_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+        
+                                    <div class="form-group col-lg-4">
+                                        <label>Location<span class="color_red" style="color:red">*</span></label>
+                                        <select name="location_id" id="location_id" class="form-control" required="">
+                                            <option value="">-- Select Location --</option> 
+                                            {% for locationes in locationes %}
+                                            <option value="{{locationes.id}}">{{locationes.location_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputDate1">Date <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="date" class="form-control"  id="datepicker" placeholder="" name="date" required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Time <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepicker" placeholder="Select time" name="time" required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Visitors Timing </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepickere" placeholder="Select time" name="visitors_timing">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group col-lg-12">
+                                    <label>Other Detail</label>
+                                    <textarea class="form-control" rows="3" placeholder="Other Detail ..." name="detail"></textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Purpose <span style="color:red">*</span></label>
+                                    <textarea class="form-control" rows="3" placeholder="Purpose ..." name="Purpose" required></textarea>
+                                </div>
+								<!--<div class="form-group col-lg-6">-->
+        <!--                            <label>Access Card <span style="color:red">*</span></label>-->
+        <!--                            <select name="employe_API" id="employe_API" class="form-control" required>-->
+        <!--                            {% for employees in employees_without_areas.data  %}-->
+                
+        <!--                                <option value="{{employees.id}}">{{employees.first_name}}</option>-->
+        <!--                            {% endfor %}-->
+        <!--                            </select>-->
+        <!--                        </div>-->
+        <!--                        <div class="form-group col-lg-6">-->
+        <!--                            <label>Area </label>-->
+        <!--                            <select name="Area[]" id="emp_area" class="form-control" multiple="multiple">-->
+        <!--                            {% for area in api_data.data  %}-->
+        <!--                                <option value="{{area.id}}">{{area.area_name}}</option>-->
+        <!--                            {% endfor %}-->
+        <!--                            </select>-->
+        <!--                        </div>-->
+                                <div class="form-group col-lg-12">
+                                    <label>Status  <span style="color:red">*</span></label>
+                                    <select name="status" id="status" class="form-control" required="">
+                                      <option value="1">Active</option>
+                                      <option value="0">Inactive</option>
+                                    </select>
+                                  </div>
+                            </div>                       
+                        </div>
+                        <input type="hidden" name="user_id" value="">
+                        <div class="box-footer text-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Flatpickr for timepicker
+        flatpickr("#timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // AM/PM format
+            time_24hr: false, // Use 12-hour format
+            defaultDate: new Date()
+        });
+
+        // Set the minimum date for datepicker
+        var dateInput = document.getElementById('datepicker');
+        var today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        dateInput.value = today;
+
+        // Initialize Select2
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#emp_area').multiselect({search: true,});
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function() {
+    // Set CSRF token for Ajax requests
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Handle input in the mobile number field
+    $('#mobileNumberInput').on('input', function() {
+        const inputMobile = $(this).val();
+        if (inputMobile.length === 0) {
+            clearUserFields();
+            clearSuggestions('#mobileSuggestions');
+            return;
+        }
+        if (inputMobile.length >= 2) {
+            $.ajax({
+                url: '/autocomplete-mobile-numbers/',
+                type: 'GET',
+                data: { term: inputMobile },
+                success: function(data) {
+                    $('#mobileSuggestions').empty().hide();
+                    if (data.length > 0) {
+                        data.forEach(function(mobile) {
+                            const parts = mobile.split(' - ');
+                            const mobileNumber = parts[0];
+                            const userId = parts[3];
+                            $('#mobileSuggestions').append(`<option value="${mobileNumber}" data-id="${userId}">${mobile}</option>`);
+                        });
+                        $('#mobileSuggestions').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                }
+            });
+        } else {
+            clearSuggestions('#mobileSuggestions');
+        }
+    });
+
+    // Handle input in the email address field
+    $('#exampleInputEmail1').on('input', function() {
+        const inputEmail = $(this).val();
+        if (inputEmail.length === 0) {
+            clearUserFields();
+            clearSuggestions('#emailSuggestions');
+            return;
+        }
+        if (inputEmail.length >= 3) {
+            $.ajax({
+                url: '/autocomplete-emails/',  // Assuming you have an endpoint for email suggestions
+                type: 'GET',
+                data: { term: inputEmail },
+                success: function(data) {
+                    $('#emailSuggestions').empty().hide();
+                    if (data.length > 0) {
+                        data.forEach(function(email) {
+                            const parts = email.split(' - ');
+                            const emailAddress = parts[0];
+                            const userId = parts[3];
+                            $('#emailSuggestions').append(`<option value="${emailAddress}" data-id="${userId}">${email}</option>`);
+                        });
+                        $('#emailSuggestions').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                }
+            });
+        } else {
+            clearSuggestions('#emailSuggestions');
+        }
+    });
+
+    // Handle change event for mobile suggestions
+    $('#mobileSuggestions').on('change', function() {
+        let selectedMobile = $(this).val();
+        const userId = $(this).find(':selected').data('id');
+        $('input[name="user_id"]').val(userId);
+        $('#mobileNumberInput').val(selectedMobile);
+        clearSuggestions('#mobileSuggestions');
+        fetchUserData(selectedMobile, userId);
+    });
+
+    // Handle change event for email suggestions
+    $('#emailSuggestions').on('change', function() {
+        let selectedEmail = $(this).val();
+        const userId = $(this).find(':selected').data('id');
+        $('input[name="user_id"]').val(userId);
+        $('#exampleInputEmail1').val(selectedEmail);
+        clearSuggestions('#emailSuggestions');
+        fetchUserDataByEmail(selectedEmail, userId);
+    });
+
+    // Fetch user data based on mobile number
+    function fetchUserData(mobile, userId) {
+        $.ajax({
+            url: '/get-user-data/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile: mobile, id: userId }),
+            success: function(response) {
+                if (response.success) {
+                    populateUserFields(response.user);
+                } else {
+                    $('#mobileCheckResult').text('User not found.').css('color', 'red');
+                    clearUserFields();
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#mobileCheckResult').text('Error fetching user data.').css('color', 'red');
+                clearUserFields();
+            }
+        });
+    }
+
+    // Fetch user data based on email address
+    function fetchUserDataByEmail(email, userId) {
+        $.ajax({
+            url: '/get-user-data-by-email/', // Adjust the endpoint as per your backend setup
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ email: email, id: userId }),
+            success: function(response) {
+                if (response.success) {
+                    populateUserFields(response.user);
+                } else {
+                    $('#emailCheckResult').text('User not found.').css('color', 'red');
+                    clearUserFields();
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#emailCheckResult').text('Error fetching user data.').css('color', 'red');
+                clearUserFields();
+            }
+        });
+    }
+
+    // Populate user fields with fetched data
+    function populateUserFields(user) {
+        $('#exampleInputFirstname1').val(user.first_name);
+        $('#exampleInputLastname1').val(user.last_name);
+        //$('#exampleInputEmail1').val(user.email);
+        
+        if (user.email) {
+        $('#exampleInputEmail1').val(user.email);
+        $('#mobileNumberInput').val(user.mobile_number); 
+        
+        }
+
+    // Populate mobile field and clear email
+    if (user.mobile) {
+        $('#mobileNumberInput').val(user.mobile_number);
+        $('#exampleInputEmail1').val(user.email); // Clear email field
+    }
+        $('#Address').val(user.address);
+        $('#genderSelect').val(user.genderSelect.trim());
+        if (user.image) {
+            $('#userImage').attr('src', user.image).show();
+            setBaseUserImage(user.image); // Update hidden input
+            $('#image_user').show();
+        } else {
+            $('#userImage').hide();
+            $('#image_user').hide();
+        }
+    }
+
+    // Clear user input fields
+    function clearUserFields() {
+        $('#exampleInputFirstname1').val('');
+        $('#exampleInputLastname1').val('');
+        $('#exampleInputEmail1').val('');
+        $('#genderSelect').val('');
+        $('#Address').val('');
+        $('#userImage').attr('src', '').hide();
+        setBaseUserImage(''); // Clear hidden input
+        $('#image_user').hide();
+        $('#mobileCheckResult').text('');
+        $('mobileNumberInput').val('');
+        window.location.reload();
+    }
+
+    // Clear suggestion dropdowns
+    function clearSuggestions(selector) {
+        $(selector).empty().hide();
+    }
+
+    // Update hidden input field value based on user image
+    function setBaseUserImage(src) {
+        $('#base_user_image').val(src);
+    }
+
+    // Handle file input change for profile image
+    $('#exampleInputFile').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageSrc = e.target.result;
+                $('#userImage').attr('src', imageSrc).show();
+                setBaseUserImage(imageSrc); // Update the hidden input value
+                $('#image_user').show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#userImage').attr('src', '').hide();
+            setBaseUserImage(''); // Clear hidden input value
+            $('#image_user').hide();
+        }
+    });
+});
+
+</script>	

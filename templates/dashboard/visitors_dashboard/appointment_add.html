@@ -1,0 +1,125 @@
+{% load static %}
+{% include 'dashboard/visitors_dashboard/header.html' %}
+{% include 'dashboard/visitors_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Add Appointment
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Add Appointment</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-md-6">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Quick Add Appointment</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label>Employee <span style="color:red">*</span></label>
+                            <select class="form-control select2" name="employee">
+                                <option value="">Choose employee</option>
+                                {% for i in all_employee %}
+                                    <option value="{{ i.id }}">{{ i.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputDate1">Date <span style="color:red">*</span></label>
+                            <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="date" class="form-control"  id="datepicker" placeholder="" name="date" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputTime1">Time <span style="color:red">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                <input type="text" class="form-control" id="timepicker" placeholder="Select time" name="time" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Visitors Type <span style="color:red">*</span></label>
+                            <select class="form-control select2" name="visitors_type">
+                                <option value="">Choose visitors type</option>
+                                <option value="candidate ">Candidate </option>
+                                <option value="customer">Customer</option>
+                                <option value="general">General</option>
+                                <option value="government officer">Government Officer</option>
+                                <option value="interviewer">Inter viewer</option>
+                                <option value="vender">vender</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                          <label>Purpose <span style="color:red">*</span></label>
+                          <textarea class="form-control" rows="3" placeholder="Purpose ..." name="Purpose" required></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label>Other Detail</label>
+                          <textarea class="form-control" rows="3" placeholder="Other Detail ..." name="detail"></textarea>
+                        </div>
+                        
+                        
+                    </div>
+  
+                    <div class="box-footer">
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                  </form>
+                </div><!-- /.box -->
+  
+  
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Flatpickr for timepicker
+        flatpickr("#timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // AM/PM format
+            time_24hr: false // Use 12-hour format
+        });
+
+        // Set the minimum date for datepicker
+        var dateInput = document.getElementById('datepicker');
+        var today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // Initialize Select2
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    });
+</script>

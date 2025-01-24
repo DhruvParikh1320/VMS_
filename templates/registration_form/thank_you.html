@@ -1,0 +1,112 @@
+{% include 'registration_form/header.html' %}
+
+{% load static %}
+{% block body  %}
+
+<style>
+  .box.box-primary {
+      max-width: 950px;
+      width:100%;
+      margin: 0 auto;
+  }
+  footer {
+    background-color: #3c8dbc !important;
+    
+}
+
+body {
+  background-color: #ecf0f5;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+ flex-direction:column;
+}
+.content {
+   padding: 50px 20px;
+}
+.wrapperes {
+  display: flex;
+ flex-direction:column;
+ flex-grow:1;
+}
+
+footer{
+    text-align: center;
+    color: #fff;
+    padding: 5px 0;
+}
+footer a{
+   display: inline-block;
+    color: #fff;
+}
+footer a:hover{
+   text-decoration:underline;
+  color: #000;
+}
+footer .footer-wrap span{
+  padding: 0 1px;
+  }
+
+  .content-wrapperes form {
+    padding-top:10px;
+  }
+  .content-wrapperes form  label{
+    text-transform: capitalize;
+  }
+  h3{
+      
+    text-align: center;
+    margin: 0;
+    padding: 50px;
+  }
+  </style>
+<body class="skin-blue">
+    <div class="wrapperes">
+
+      <header class="main-header">
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top text-center" role="navigation" style="background-color: #3c8dbc !important; margin-left: 0px !important;">
+            
+            {% if GET_PASS_IMAGE %}
+                <img src="{% static GET_PASS_IMAGE %}" class="com-logo" style="margin: 5px;width: auto;height: 60px;">
+            {% else %}
+
+            {% endif %}
+          <!--<img src="{% static 'image/logo.png' %}" style="margin: 5px;width: auto;height: 60px;">-->
+        </nav>
+      </header>
+
+      <div class="content-wrapperes" style="background-color:#ecf0f5">
+
+        <section class="content">
+          <div class="row"> 
+            <div class="col-md-12">
+            
+              <div class="box box-primary">
+                
+                    {% if registered == 'true'%}
+                    
+                        <h3>{{thank_message}}</h3>
+                    
+                    {% elif registered == 'false'%}
+                         <h3>{{thank_message}}</h3>
+                         
+                    {% else %}
+                        <h3>{{message}}</h3>
+                    
+                    {% endif %}
+              </div>
+
+            </div>
+          </div>  
+
+        </section>
+      </div>
+    </div>
+</body>
+
+
+{% endblock body  %}
+
+{% include 'registration_form/footer.html' %}

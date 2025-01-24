@@ -1,0 +1,493 @@
+{% load static %}
+{% include 'dashboard/visitors_dashboard/header.html' %}
+{% include 'dashboard/visitors_dashboard/body.html' %}
+<style>
+  /* Custom CSS to change the backdrop opacity */
+  .modal-backdrop.in {
+      filter: alpha(opacity = 70); /* For IE */
+      opacity: 0.9; /* Adjust opacity to 70% */
+  }
+</style>
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div style="padding:10px;" id="message-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="modal fade" id="safetyTrainingModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="safetyTrainingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="safetyTrainingModalLabel">Required Safety Training</h4>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <video id="safetyVideo" width="100%"  controls>
+            <source src="/safety_training/{{ last_video }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="alert alert-info mt-3">
+          <i class="fa fa-info-circle"></i> You must complete the safety training video before accessing the dashboard.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="completeTraining" disabled>Mark as Completed</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <section class="content-header">
+    <h1>
+      Dashboard
+      <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Dashboard</li>
+    </ol>
+  </section>
+<!-- Main content -->
+<section class="content">
+<!-- Small boxes (Stat box) -->
+<div class="row">
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h3>{{total_visitors_count}}</h3>
+        <p>Today Appointment</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-calendar"></i>
+      </div>
+      {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+    </div>
+  </div><!-- ./col -->
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h3>{{pending_count}}</h3>
+        <p>Pending Request</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-clock-o"></i>
+      </div>
+      {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+    </div>
+  </div><!-- ./col -->
+
+  
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h3>{{check_in_count}}</h3>
+        <p>Total Check In</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-sign-in"></i>
+      </div>
+      {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+    </div>
+  </div><!-- ./col -->
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h3>{{check_out_count}}</h3>
+        <p>Total Check Out</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-sign-out"></i>
+      </div>
+      {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+    </div>
+  </div><!-- ./col -->
+</div><!-- /.row -->
+
+</section>
+<section class="content">
+<div class="row">
+
+  <!-- Visitor Check In Table -->
+  <div class="col-xs-12">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Visitor Check In</h3>
+      </div>
+      <div class="box-body">
+        <div class="table-responsive">
+          <table id="check_in_table" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Visitor Name</th>
+                <th>Visitor Mobile</th>
+                <th>Visitor Email</th>
+                <th>Visitor UNI ID</th>
+                <th>Visitor Image</th>
+                <th>Employee Name</th>
+                <th>Check-In Time</th>
+                <th>Meeting status</th>
+                <th>Check-Out Time</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {% if all_check_in_dtl %}
+                {% for appointment in all_check_in_dtl %}
+                <tr>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                  <td>{{ appointment.visitors_mobile }}</td>
+                  <td>{{ appointment.visitors_email }}</td>
+                  <td>{{ appointment.visitors_uni_id }}</td>
+                  <td>
+                    {% if appointment.visitors_image %}
+                      <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% else %}
+                      <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% endif %}
+                  </td>
+                  <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                  <td>{{ appointment.start_time }}</td>
+                  <td>In the Meeting</td>
+                  <td>{{ appointment.stop_time }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9">No visitors have checked in today.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Visitor Check Out Table -->
+  <div class="col-xs-12">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Visitor Check Out</h3>
+      </div>
+      <div class="box-body">
+        <div class="table-responsive">
+          <table id="check_out_table" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Visitor Name</th>
+                <th>Visitor Mobile</th>
+                <th>Visitor Email</th>
+                <th>Visitor UNI ID</th>
+                <th>Visitor Image</th>
+                <th>Employee Name</th>
+                <th>Check-In Time</th>
+                <th>Meeting status</th>
+                <th>Check-Out Time</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {% if all_check_out_dtl %}
+                {% for appointment in all_check_out_dtl %}
+                <tr>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                  <td>{{ appointment.visitors_mobile }}</td>
+                  <td>{{ appointment.visitors_email }}</td>
+                  <td>{{ appointment.visitors_uni_id }}</td>
+                  <td>
+                    {% if appointment.visitors_image %}
+                      <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% else %}
+                      <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% endif %}
+                  </td>
+                  <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                  <td>{{ appointment.start_time }}</td>
+                  <td>Meeting out</td>
+                  <td>{{ appointment.stop_time }}</td>
+                  
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9">No visitors have checked out today.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Visitor Pending Table -->
+  <div class="col-xs-12">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Visitor Pending</h3>
+      </div>
+      <div class="box-body">
+        <div class="table-responsive">
+          <table id="pending_table" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Visitor Name</th>
+                <th>Visitor Mobile</th>
+                <th>Visitor Email</th>
+                <th>Visitor UNI ID</th>
+                <th>Visitor Image</th>
+                <th>Employee Name</th>
+                <th>Appointment Status</th>
+                <th>Check-In Time</th>
+                <th>Check-Out Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if all_pending_list %}
+                {% for appointment in all_pending_list %}
+                <tr>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                  <td>{{ appointment.visitors_mobile }}</td>
+                  <td>{{ appointment.visitors_email }}</td>
+                  <td>{{ appointment.visitors_uni_id }}</td>
+                  <td>
+                    {% if appointment.visitors_image %}
+                      <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% else %}
+                      <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                    {% endif %}
+                  </td>
+                  <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                  <td>{{ appointment.status }}</td>
+                  <td>{{ appointment.start_time }}</td>
+                  <td>{{ appointment.stop_time }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9">No pending visitors today.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+</div>
+<!-- Add this JavaScript at the bottom of your dashboard.html, before </body> -->
+
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+{% comment %} <script>
+  $(document).ready(function() {
+      // Debug the value first
+      console.log("Safety training status:", {{ useres.is_safety_training|default:'null' }});
+      
+      {% if useres.is_safety_training == 0 or not useres.is_safety_training or useres.is_safety_training == '0' %}
+          console.log("Showing safety training modal");
+          
+          // Show modal immediately
+          $('#safetyTrainingModal').modal({
+              backdrop: 'static',
+              keyboard: false,
+              show: true
+          });
+          
+          var video = document.getElementById('safetyVideo');
+          var completeButton = document.getElementById('completeTraining');
+          
+          // Debug video element
+          console.log("Video element:", video);
+          console.log("Video source:", video.querySelector('source').src);
+          
+          // Enable complete button only after video is finished
+          video.addEventListener('ended', function() {
+              console.log("Video ended, enabling button");
+              completeButton.removeAttribute('disabled');
+          });
+          
+          // Handle completion
+          $('#completeTraining').click(function() {
+              console.log("Sending completion request");
+              $.ajax({
+                  url: '{% url "update_safety_training_status" %}',
+                  type: 'POST',
+                  data: JSON.stringify({
+                      user_id: '{{ user_id }}'
+                  }),
+                  contentType: 'application/json',
+                  headers: {
+                      'X-CSRFToken': '{{ csrf_token }}'
+                  },
+                  success: function(response) {
+                      console.log("Training completed successfully");
+                      alert('Safety training completed!');
+                      $('#safetyTrainingModal').modal('hide');
+                      location.reload();
+                  },
+                  error: function(xhr, status, error) {
+                      console.error("Error:", error);
+                      alert('Error updating safety training status: ' + error);
+                  }
+              });
+          });
+      {% else %}
+          console.log("Safety training already completed");
+      {% endif %}
+      
+  });
+  </script> {% endcomment %}
+
+
+  <script>
+    $(document).ready(function() {
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+    
+        // Auto-hide alerts after 5 seconds
+        $('.alert').not('.alert-info').delay(5000).fadeOut(500);
+    
+        // Safety Training Modal Handler
+        var safetyTrainingStatus = {{ useres.is_safety_training|default:'0' }};
+        console.log("Safety training status:", safetyTrainingStatus);
+    
+        if (safetyTrainingStatus == 0 || !safetyTrainingStatus) {
+            console.log("Showing safety training modal");
+            showSafetyTrainingModal();
+        } else {
+            console.log("Safety training already completed");
+        }
+    
+        function showSafetyTrainingModal() {
+            var $modal = $('#safetyTrainingModal');
+            var $video = $('#safetyVideo');
+            var $completeButton = $('#completeTraining');
+            
+            // Show modal
+            $modal.modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: true
+            });
+    
+            // Video event handlers
+            $video.on('ended', function() {
+                console.log("Video ended, enabling completion button");
+                $completeButton.prop('disabled', false)
+                              .addClass('btn-success')
+                              .removeClass('btn-primary');
+            });
+    
+            $video.on('play', function() {
+                console.log("Video started playing");
+            });
+    
+            $video.on('error', function(e) {
+                console.error("Video error:", e);
+                showErrorMessage("Error loading the safety training video. Please refresh the page or contact support.");
+            });
+    
+            // Complete button handler
+            $completeButton.click(function() {
+                console.log("Sending completion request");
+                submitSafetyTraining();
+            });
+        }
+    
+        function submitSafetyTraining() {
+            $.ajax({
+                url: '{% url "update_safety_training_status" %}',
+                type: 'POST',
+                data: JSON.stringify({
+                    user_id: '{{ user_id }}'
+                }),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log("Training completed successfully");
+                    handleTrainingSuccess();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    handleTrainingError(error);
+                }
+            });
+        }
+    
+        function handleTrainingSuccess() {
+            // Create success message
+            var successMessage = `
+                <div class="alert alert-success alert-dismissible fade in" role="alert" id="training-success-alert">
+                    <i class="fa fa-check-circle"></i> Safety training completed successfully!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+    
+            // Hide modal
+            $('#safetyTrainingModal').modal('hide');
+    
+            // Show success message
+            $('#message-container').html(successMessage);
+    
+            // Auto-hide message after 5 seconds
+            setTimeout(function() {
+                $('#training-success-alert').fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
+    
+            // Optional: Reload page after slight delay
+            setTimeout(function() {
+                location.reload();
+            }, 1500);
+        }
+    
+        function handleTrainingError(error) {
+            var errorMessage = `
+                <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                    <i class="fa fa-exclamation-circle"></i> Error updating safety training status: ${error}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+            $('#message-container').html(errorMessage);
+        }
+    
+        function showErrorMessage(message) {
+            var errorMessage = `
+                <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                    <i class="fa fa-exclamation-circle"></i> ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+            $('#message-container').html(errorMessage);
+        }
+    });
+    </script>

@@ -1,0 +1,98 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        Email Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Email Management</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Edit Email </h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+
+                            <div class="form-group col-lg-12">
+								<label>Email <span class="color_red" style="color:red">*</span></label>
+								<input type="text" name="email" required class="form-control" id="emailInput" data-multiple="true" placeholder="Enter emails separated by commas" value="{{admin_auto_email.email}}">
+								<span id="emailError" style="color: red;"></span> <!-- For displaying validation errors -->
+							</div>
+
+
+                            
+                              
+                        <div class="box-footer">
+							<button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+						</div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+// Select the email input field and error message element
+var emailInput = document.getElementById('emailInput');
+var emailError = document.getElementById('emailError');
+var submitButton = document.getElementById('submitButton');
+
+// Function to validate multiple email addresses
+function validateEmails() {
+    var emails = emailInput.value.split(',');
+    emailError.innerHTML = ''; // Reset error message
+    
+    var isValid = emails.every(function (email) {
+        email = email.trim(); // Trim any whitespace
+        return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    });
+    
+    if (!isValid) {
+        emailError.innerHTML = 'Please enter valid email addresses separated by commas.';
+        emailInput.style.borderColor = 'red';
+		 submitButton.disabled = true; 
+		
+		
+    } else {
+        emailInput.style.borderColor = '';
+		 submitButton.disabled = false; 
+    }
+}
+
+// Add event listeners for 'blur', 'input', and 'change' events
+emailInput.addEventListener('blur', validateEmails);
+emailInput.addEventListener('input', validateEmails);
+emailInput.addEventListener('change', validateEmails);
+
+</script>

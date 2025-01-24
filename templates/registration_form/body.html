@@ -1,0 +1,328 @@
+{% load static %}
+{% block body  %}
+
+<style>
+  .box.box-primary {
+      max-width: 950px;
+      width:100%;
+      margin: 0 auto;
+  }
+  footer {
+    background-color: #3c8dbc !important;
+    
+}
+
+body {
+  background-color: #ecf0f5;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+ flex-direction:column;
+}
+.content {
+   padding: 50px 20px;
+}
+.wrapperes {
+  display: flex;
+ flex-direction:column;
+ flex-grow:1;
+}
+
+footer{
+    text-align: center;
+    color: #fff;
+    padding: 5px 0;
+}
+footer a{
+   display: inline-block;
+    color: #fff;
+}
+footer a:hover{
+   text-decoration:underline;
+  color: #000;
+}
+footer .footer-wrap span{
+  padding: 0 1px;
+  }
+
+  .content-wrapperes form {
+    padding-top:10px;
+  }
+  .content-wrapperes form  label{
+    text-transform: capitalize;
+  }
+  </style>
+<body class="skin-blue">
+    <div class="wrapperes">
+
+      <header class="main-header">
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top text-center" role="navigation" style="background-color: #3c8dbc !important; margin-left: 0px !important;">
+            {% if GET_PASS_IMAGE %}
+                <img src="{% static GET_PASS_IMAGE %}" class="com-logo" style="margin: 5px;width: auto;height: 60px;">
+            {% else %}
+
+            {% endif %}        
+          <!--<img src="{% static 'image/logo.png' %}" style="margin: 5px;width: auto;height: 60px;">-->
+        </nav>
+      </header>
+
+      <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapperes" style="background-color:#ecf0f5">
+        <!-- Content Header (Page header) -->
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+              <!-- general form elements -->
+              <div class="box box-primary">
+                <div class="box-header">
+                  <h3 class="box-title"> Register Form</h3>
+                </div><!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" method="POST" enctype="multipart/form-data" action="">
+                  {% csrf_token %}
+                  <div class="box-body1">
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <label for="employee"> Employee<span style="color:red">*</span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" id="employee" placeholder="Enter Employee" name="employee" value='{{user_data_dict.employee_code}} {{user_data_dict.first_name}} {{user_data_dict.last_name}}' disabled required>
+                      </div>
+                    </div> 
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <label for="exampleInputFirstname1">First name <span style="color:red">*</span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" id="Firstnames" placeholder="Enter Firstname" name="Firstname" required>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <label for="exampleInputLastname1">Last name <span style="color:red">*</span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname" required>
+                      </div>
+                    </div>
+
+<!--                    <div class="form-group">-->
+<!--                      <label for="exampleInputLastname1">Last name</label>-->
+<!--                      <input type="text" class="form-control" id="exampleInputLastname1" placeholder="Enter Lastname">-->
+<!--                    </div>-->
+                    <div class="form-group col-lg-12">
+                      <label for="exampleInputEmail1">Email address <span style="color:red">*</span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" value="{{user_visitor.email}}" name="Email" disabled required>
+                      </div>
+                    </div>
+<!--                    <div class="form-group">-->
+<!--                      <label for="exampleInputEmail1">Email address</label>-->
+<!--                      <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">-->
+<!--                    </div>-->
+
+                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">-->
+                    <!--  <label for="exampleInputPassword1">Password <span style="color:red">*</span></label>-->
+                    <!--  <div class="input-group">-->
+                    <!--    <span class="input-group-addon"><i class="fa fa-lock"></i></span>-->
+                    <!--    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" required>-->
+                    <!--  </div>-->
+                    <!--</div>-->
+
+<!--                    <div class="form-group">-->
+<!--                      <label for="exampleInputPassword1">Password</label>-->
+<!--                      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">-->
+<!--                    </div>-->
+                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">-->
+                    <!--  <label for="exampleInputConfirmPassword1">Confirm Password <span style="color:red">*</span></label>-->
+                    <!--  <div class="input-group">-->
+                    <!--    <span class="input-group-addon"><i class="fa fa-lock"></i></span>-->
+                    <!--    <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password" required>-->
+                    <!--  </div>-->
+                    <!--</div>-->
+
+                    <div class="form-group col-lg-12">
+                      <label>Address <span style="color:red">*</span></label>
+                      <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" required></textarea>
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <label>Enter Your Mobile Number <span style="color:red">*</span></label>
+                      <div class="input-group">
+                        <div class="input-group-addon">
+                          <i class="fa fa-phone"></i>
+                        </div>
+                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number"pattern="[0-9]*" inputmode="numeric" name="mobile" minlength='10' maxlength='11'  oninput="validateNumericInput(this)"name="mobile" required>
+                      </div><!-- /.input group -->
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <label>Gender <span style="color:red">*</span></label>
+                      <select class="form-control" name="gender" required>
+                        <option value=''>Choose Gender</option>
+                        <option value='Male'>Male</option>
+                        <option value='Female'>Female</option>
+                      </select>
+                    </div>
+                    <!--<div class="form-group col-lg-12">-->
+                    <!--  <label for="exampleInputFile">Profile Image<span style="color:red">*</span></label>-->
+                    <!--  <input type="file" id="exampleInputFile"  name="image" class="form-control" required>-->
+<!--                      <p class="help-block">Example block-level help text here.</p>-->
+                    <!--</div>-->
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <label for="exampleInputFile">Profile Image<span style="color:red">*</span></label>
+
+                        {% comment %} <input type="file" id="exampleInputFile"  name="image" class="form-control" required> {% endcomment %}
+                        <div class="picture-container">
+                            <div class='col-lg-4'>
+                                <video id="video" width="150" height="150" autoplay style='border:1px solid #ccc;object-fit: cover;'></video>
+                                <canvas id="canvas" style="display:none;" width='150' height='150'></canvas>
+                                <br>
+                                <button type="button" class="btn btn-primary btn-open-camera">Open Camera</button>
+                                <button type="button" class="btn btn-success btn-take-picture">Take a Picture</button>
+                            </div>
+                            
+                        </div>
+                        <div class='col-lg-3'>
+                            <div class="form-group" id='image_user' style='display:none'>                                        
+                                <img src="" alt="" width="150" height="150">
+                                <input type="hidden" value="" id="base_user_image" name='user_image'>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+<!--                    <div class="checkbox">-->
+<!--                      <label>-->
+<!--                        <input type="checkbox"> Check me out-->
+<!--                      </label>-->
+<!--                    </div>-->
+                  </div><!-- /.box-body -->
+
+                  <div class="box-footer">
+                     <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                     </div>
+                  </div>
+                </form>
+              </div><!-- /.box -->
+
+
+            </div>
+          </div>   <!-- /.row -->
+
+        </section><!-- /.content -->
+      </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const openCameraBtn = document.querySelector('.btn-open-camera');
+        const takePictureBtn = document.querySelector('.btn-take-picture');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const imageElement = document.querySelector('#image_user img');
+        console.log('imageElement:', imageElement); 
+        const inputElement = document.querySelector('#image_user input');
+        console.log('inputElement_1:', inputElement); 
+        const context = canvas.getContext('2d');
+        let imageCount = 0; // Counter for the number of images captured
+        const capturePhotoUrl = '{% url "capture_photo" %}';
+        console.log('Capture Photo URL:', capturePhotoUrl); 
+        
+        function openCamera() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing the camera:', error);  
+                    });
+                } else {
+                    console.error("Camera not supported by this browser.");
+                }
+            } catch(err) {
+                console.error('Error:', err);
+            }
+        }
+
+        function takePicture() {
+            if (imageCount < 1) { // Take pictures until 5 images are captured
+                context.drawImage(video, 0, 0, 150, 150);
+                console.log('context:', context);
+                const imageDataURL = canvas.toDataURL('image/jpeg');
+                console.log('Picture taken:', imageDataURL);
+
+                const firstNameInput = document.getElementById('Firstnames');
+                if (!firstNameInput) {
+                    console.error('Firstname input element not found.');
+                    return;
+                }
+
+                console.log('Firstname input element:', firstNameInput);
+                console.log('Firstname input value:', firstNameInput.value);
+
+                if (imageElement) {
+                    imageElement.src = imageDataURL;
+                    inputElement.value = imageDataURL;
+                    $("#image_user").show();
+                    $('#btn_submit').prop('disabled', false);
+                }
+
+                // Send the captured image data to the server using AJAX
+                /*$.ajax({
+                    url: capturePhotoUrl,
+                    type: 'POST',
+                    data: {
+                        image: imageDataURL,
+                        name: firstNameInput.value
+                    },
+                    success: function(data) {
+                        console.log('Server response:', data);
+                        // Handle the server response as needed
+                        if (data.status === 'success') {
+                            imageCount++;
+                            if (imageCount === 1) {
+                                // Close the camera after capturing 5 images
+                                video.srcObject.getTracks().forEach(track => {
+                                    track.stop();
+                                });
+                            }
+                        } else {
+                            console.error('Image capture failed.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error sending image data:', error);
+                        // Handle error
+                    }
+                });*/
+            }
+        }
+
+        openCameraBtn.addEventListener('click', openCamera);
+        takePictureBtn.addEventListener('click', takePicture);
+    });
+</script>
+<script>
+  function validateNumericInput(input) {
+      // Remove any non-numeric characters
+      input.value = input.value.replace(/[^0-9]/g, '');
+  }
+</script>
+{% endblock body  %}

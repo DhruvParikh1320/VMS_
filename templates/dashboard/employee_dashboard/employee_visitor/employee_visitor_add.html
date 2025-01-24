@@ -1,0 +1,385 @@
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Add Appointment
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Add Appointment</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Quick Add Appointment</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                    <form role="form" method="POST" enctype="multipart/form-data" action="">
+                        {% csrf_token %}
+                        
+                        <div class="box-body">
+                            <div class='row'>
+                                <div class='col-md-6'>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputFirstname1">First name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control" id="exampleInputFirstname1" placeholder="Enter Firstname" name="Firstname" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputLastname1">Last name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputEmail1">Email address <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="Email" required>
+                                        </div>
+                                    </div>
+                
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputPassword1">Password <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputConfirmPassword1">Confirm Password <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Enter Your Mobile Number <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number" pattern="[0-9]*" inputmode="numeric" name="mobile" required>
+                                        <select id="mobileSuggestions" class="form-control" size="10" style="display: none;"></select>
+                                        </div><!-- /.input group -->
+                                    </div>
+                                    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Gender <span style="color:red">*</span></label>
+                                        <select class="form-control" name="gender" id="genderSelect" required>
+                                        <option>Choose Gender</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6" style="clear: both;" style="color:red">
+                                        <label>Company <span class="color_red" style="color:red">*</span></label>
+                                        <select name="company_id" id="company_id" class="form-control" required="">
+                                            <option value="">-- Select Company  --</option>
+                                            {% for companyes in companyes %}
+                                            <option value="{{companyes.id}}">{{companyes.company_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label>Department <span class="color_red" style="color:red">*</span></label>
+                                        <select name="department_id" id="department_id" class="form-control" required="">
+                                            <option value="">-- Select Department --</option>    
+                                            {% for departments in departmentes %}
+                                            <option value="{{departments.id}}">{{departments.department_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+        
+                                    <div class="form-group col-lg-6">
+                                        <label>Location<span class="color_red" style="color:red">*</span></label>
+                                        <select name="location_id" id="location_id" class="form-control" required="">
+                                            <option value="">-- Select Location --</option> 
+                                            {% for locationes in locationes %}
+                                            <option value="{{locationes.id}}">{{locationes.location_name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label>Roles <span class="color_red" style="color:red">*</span></label>
+                                        <select name="roles_id" id="rolest_id" class="form-control" required="">
+                                            <option value="">-- Select Roles --</option>    
+                                            {% for roles in roles %}
+                                            <option value="{{roles.name}}">{{roles.name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label>Address <span style="color:red">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" required></textarea>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputFile">Profile Image<span style="color:red">*</span></label>
+                                        <input type="file" id="exampleInputFile"  name="image" class="form-control" required>
+                                    </div>
+                                    <div class='col-lg-12'>
+                                        <div class="form-group" id='image_user' style='display:none'>                                        
+                                            <img src="" alt="" width="150" height="150" id="userImage">
+                                            <input type="hidden" value="" id="base_user_image" name='user_image'>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            <div class='col-md-6'>                             
+                                <div class="form-group col-lg-12 ">
+                                    <label>Employee <span style="color:red">*</span></label>
+                                    <select class="form-control select2" name="employee">
+                                        {% for i in all_employee %}
+                                            <option value="{{ i.id }}">{{ i.first_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-12 ">
+                                    <label>Visitors Type <span style="color:red">*</span></label>
+                                    <select class="form-control select2" name="visitors_type">
+                                        <option value="">Choose visitors type</option>
+                                        <option value="candidate ">Candidate </option>
+                                        <option value="customer">Customer</option>
+                                        <option value="general">General</option>
+                                        <option value="government officer">Government Officer</option>
+                                        <option value="interviewer">Inter viewer</option>
+                                        <option value="vender">vender</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputDate1">Date <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="date" class="form-control"  id="datepicker" placeholder="" name="date" required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Time <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepicker" placeholder="Select time" name="time" required>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group col-lg-12">
+                                    <label>Other Detail</label>
+                                    <textarea class="form-control" rows="3" placeholder="Other Detail ..." name="detail"></textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Purpose <span style="color:red">*</span></label>
+                                    <textarea class="form-control" rows="3" placeholder="Purpose ..." name="Purpose" required></textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Status  <span style="color:red">*</span></label>
+                                    <select name="status" id="status" class="form-control" required="">
+                                      <option value="1">Active</option>
+                                      <option value="0">Inactive</option>
+                                    </select>
+                                  </div>
+                            </div>                       
+                        </div>
+    
+                        <div class="box-footer text-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Flatpickr for timepicker
+        flatpickr("#timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // AM/PM format
+            time_24hr: false // Use 12-hour format
+        });
+
+        // Set the minimum date for datepicker
+        var dateInput = document.getElementById('datepicker');
+        var today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // Initialize Select2
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    });
+</script>
+
+<script>
+$(document).ready(function() {
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $('#mobileNumberInput').on('input', function() {
+        const inputMobile = $(this).val();
+
+        // If the input is empty, clear user fields and suggestions
+        if (inputMobile.length === 0) {
+            clearUserFields();
+            clearSuggestions();
+            return; // Exit early if input is empty
+        }
+
+        // Fetch suggestions if input is not empty
+        if (inputMobile.length >= 2) {
+            $.ajax({
+                url: '/autocomplete-mobile-numbers/',
+                type: 'GET',
+                data: { term: inputMobile },
+                success: function(data) {
+                    console.log("Fetched mobile numbers:", data); // Debugging line
+                    $('#mobileSuggestions').empty().hide();
+                    if (data.length > 0) {
+                        data.forEach(function(mobile) {
+                        const parts = mobile.split(' - '); // Assuming mobile is formatted as "number - name - id"
+                        const mobileNumber = parts[0];
+                        console.log("mobileNumber:", mobileNumber);
+                        const userId = parts[3];
+                        console.log("userId:", userId);
+                            $('#mobileSuggestions').append(`<option value="${mobileNumber}" data-id="${userId}">${mobile}</option>`);
+                        });
+                        $('#mobileSuggestions').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', status, error);
+                }
+            });
+        } else {
+            clearSuggestions();
+        }
+    });
+
+    function clearSuggestions() {
+        $('#mobileSuggestions').empty().hide();
+
+    }
+
+<!--    $('#mobileSuggestions').on('change', function() {-->
+<!--        let selectedMobile = $(this).val();-->
+<!--        $('#mobileNumberInput').val(selectedMobile);-->
+<!--         console.log("mobileNumberInput received:", mobileNumberInput);-->
+<!--        clearSuggestions();-->
+<!--        fetchUserData(selectedMobile);-->
+<!--    });-->
+    $('#mobileSuggestions').on('change', function() {
+        let selectedMobile = $(this).val();
+        const userId = $(this).find(':selected').data('id');
+        console.log("userId received:", userId);
+        $('input[name="user_id"]').val(userId);
+        $('#mobileNumberInput').val(selectedMobile);
+        clearSuggestions();
+        fetchUserData(selectedMobile, userId);
+
+
+    });
+    function fetchUserData(mobile,userId) {
+        //const userId = $('#mobileSuggestions').find(':selected').data('id');
+        //console.log("userId received:", userId);
+        $.ajax({
+            url: '/get-user-data/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile: mobile, id: userId }),
+            success: function(response) {
+                console.log("Response received:", response);
+                if (response.success) {
+                    populateUserFields(response.user);
+                } else {
+                    $('#mobileCheckResult').text('User not found.').css('color', 'red');
+                    clearUserFields();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', status, error);
+                $('#mobileCheckResult').text('Error fetching user data.').css('color', 'red');
+                clearUserFields();
+            }
+        });
+    }
+
+    function populateUserFields(user) {
+        $('#exampleInputFirstname1').val(user.first_name);
+        $('#exampleInputLastname1').val(user.last_name);
+        $('#exampleInputEmail1').val(user.email);
+        $('#Address').val(user.address);
+        $('#genderSelect').val(user.genderSelect.trim());
+        if (user.image) { 
+            $('#userImage').attr('src', user.image).show();
+            $('#base_user_image').val(user.image);
+            $('#image_user').show();
+        } else {
+            $('#userImage').hide();
+            $('#image_user').hide(); 
+        }
+    }
+
+    function clearUserFields() {
+        $('#exampleInputFirstname1').val('');
+        $('#exampleInputLastname1').val('');
+        $('#exampleInputEmail1').val('');
+        $('#Address').val('');
+        $('#userImage').attr('src', '').hide();
+        $('#genderSelect').val('');
+        $('#mobileCheckResult').text(''); // Clear the result message
+        window.location.reload();
+
+    }
+});
+</script>

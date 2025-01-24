@@ -1,0 +1,144 @@
+
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding:10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        User Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">User Management</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="box">
+          <div class="box-header">
+          </div>
+          <a href="{% url 'admin_user_add' %}" class="btn btn-primary" style="margin: 10px;">ADD
+            User</a>
+<!--          <button id="delete-selected" class="btn btn-danger" style="margin: 10px;"><i class="fa fa-trash-o"></i> DELETE SELECTED</button>-->
+          <div class="table-responsive" style="margin: 10px;">
+            <table id="user_table" class="table table-bordered table-striped" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Company</th>
+                        <th>Department</th>
+                        <th>Location</th>
+                        <th>Role</th>
+                        <th>Status</th>
+    
+                    </tr>
+                  </thead>
+
+            </table>
+            {% csrf_token %} 
+
+      </div>
+</section>
+</div>
+</div>
+
+
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+
+<script src="{% static 'dist\js\pages\user_delete.js' %}" type="text/javascript"></script>
+ <script>
+  $(document).ready(function() {
+    // Retrieve CSRF token value from the hidden input
+    var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
+    console.log("CSRF Token: ", csrfToken);
+
+    // Set up AJAX to include the CSRF token in the headers for non-GET requests
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                console.log("CSRF Token set in header: ", csrfToken);
+            }
+        }
+    });
+
+    // Define the AJAX URL, ensure it's correctly rendered
+    var ajaxUrl = "{% url 'admin_user_ajax_page_ajax' %}";
+    console.log("AJAX URL: ", ajaxUrl);
+
+    // Initialize DataTable with server-side processing
+    $('#user_table').DataTable({
+        "ajax": {
+            "url": ajaxUrl,
+            "type": "POST"
+        },
+        "columns": [
+            { data: 'id'},
+            { data : 'first_name'},
+            { data : 'last_name'},
+            { data : 'email'},
+            { data : 'company_name'},
+            { data : 'department_name'},
+            { data : 'location_name'},
+            { data : 'type'},
+            {
+                data: 'is_active',
+                render: function(data, type, row) {
+                    return data == 1 ? 'Active' : 'Inactive';
+                }
+            },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    var editUrl = "{% url 'admin_user_edit' 0 %}".replace('0', row.id);
+                    var deleteUrl = "{% url 'admin_user_delete' 0 %}".replace('0', row.id);
+
+                    var editButton = '<a title="EDIT" href="' + editUrl + '" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></a>';
+                    var deleteButton = '<button title="DELETE" class="btn btn-danger delete-link" data-id="' + row.id + '" value="' + deleteUrl + '"><i class="fa fa-trash-o"></i></button>';
+
+                    return editButton + ' ' + deleteButton;
+                }
+            }
+
+
+        ],
+        "processing": true,
+        "serverSide": true,
+        "responsive": true,
+        "ordering": false,
+        lengthMenu: [
+            [10, 25, 50, 100],
+            [10, 25, 50, 100]
+        ],
+        layout: {
+            topStart: {
+                buttons: ['csv', 'print','pageLength']
+            }
+       },
+    });
+});
+
+
+  </script>

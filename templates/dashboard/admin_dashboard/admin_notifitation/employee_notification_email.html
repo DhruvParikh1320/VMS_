@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>New Visitor Appointment</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #333;">New Visitor Appointment</h2>
+        <p>Dear {{ employee_data.first_name }} {{ employee_data.last_name }},</p>
+        <p>You have a new visitor appointment scheduled. Here are the details:</p>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Visitor Name:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ visitor_data.first_name }} {{ visitor_data.last_name }}</td>
+            </tr>
+
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Visitor Mobile:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ visitor_data.mobile }}</td>
+            </tr>
+
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Visitor Email:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ visitor_data.email }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Appointment Date:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.date }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Appointment Time:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.time }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Purpose:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.purpose }}</td>
+            </tr>
+        </table>
+        <p>Please be prepared to receive the visitor at the scheduled time.</p>
+        <a href="{{ accept_url }}" style="padding: 10px 15px; background-color: green; color: white; text-decoration: none; border-radius: 5px;">Accept</a>
+        <a href="{{ reject_url }}" style="padding: 10px 15px; background-color: red; color: white; text-decoration: none; border-radius: 5px;">Reject</a>
+        <p>Thank you!</p>
+        <p style="color: #555;">Visitor Management System</p>
+    </div>
+</body>
+</html>

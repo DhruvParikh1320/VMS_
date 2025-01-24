@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #333;">Appointment Confirmation</h2>
+        <p>Dear {{ visitor_data.first_name }} {{ visitor_data.last_name }},</p>
+        <p>Your appointment has been successfully scheduled. Below are the details:</p>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Appointment Id:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.id }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Employee Name:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ employee_data.first_name }} {{ employee_data.last_name }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Appointment Date:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.date }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Appointment Time:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.time }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">Purpose:</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ new_appointment.purpose }}</td>
+            </tr>
+        </table>
+        {% if is_link != False %}
+			<p>Please Cilck on then below link and update your details.</p>
+			<p><a href="{{ confirmation_link }}">Registration</a></p>		
+		{% endif %}
+        <p>We look forward to seeing you at the scheduled time.</p>
+        <p>Thank you!</p>
+        <p style="color: #555;">Visitor Management System</p>
+    </div>
+</body>
+</html>

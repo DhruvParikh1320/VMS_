@@ -1,0 +1,183 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        User Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">User Management</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Edit User </h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+
+                            <div class="form-group col-lg-6">
+                                <label>First Name <span class="color_red" style="color:red">*</span></label>
+                                <input type="text" name="first_name" required="" class="form-control" value="{{all_user.first_name}}">
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label>Last Name <span class="color_red" style="color:red">*</span></label>
+                                <input type="text" name="last_name" required="" class="form-control" value="{{all_user.last_name}}">
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>Email <span class="color_red" style="color:red">*</span></label>
+                                <input type="email" name="email" required="" class="form-control" value="{{all_user.email |default:"" }}">
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>Employee Code <span class="color_red" style="color:red">*</span></label>
+                                {% comment %} <input type="number" name="employee_code" required="" class="form-control" value="{{all_user.employee_code}}" > {% endcomment %}
+                                <input type="text" class="form-control" id="employee_code"  value="{{all_user.employee_code}}" placeholder="Enter Employee Code" inputmode="numeric" name="employee_code" required oninput="validateNumericInput(this)">
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label>Password </label>
+                                <input type="password" name="Password" class="form-control" value="">
+                            </div>
+                            
+                            
+                            <div class="form-group col-lg-6" style="clear: both;" style="color:red">
+                                <label>Company <span class="color_red" style="color:red">*</span></label>
+                                <select name="company_id" id="company_id" class="form-control" required="">
+                                    <option value="">-- Select Company  --</option>
+                                    {% for companyes in companyes %}
+                                    <option value="{{companyes.id}}" {% if all_user.company_id == companyes.id %} selected {% endif %}>{{companyes.company_name}}</option>
+                                    {% endfor%}
+                                </select>
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <label>Department <span class="color_red" style="color:red">*</span></label>
+                                <select name="department_id" id="department_id" class="form-control" required="">
+                                    <option value="">-- Select Department --</option>    
+                                    {% for departments in departmentes %}
+                                    <option value="{{departments.id}}" {% if all_user.department_id == departments.id %} selected {% endif %}>{{departments.department_name}}</option>
+                                    {% endfor%}
+                                </select>
+                            </div>
+                            
+                            {% comment %} <div class="form-group col-lg-6">
+                                <label>Area <span class="color_red" style="color:red">*</span></label>
+                                <select name="area_id" id="area_id" class="form-control" required="required" multiple>
+                                    {% for area in area %}
+                                    <option value="{{area.id}}" {% if all_user.area_id == area.id %} selected {% endif %}>{{area.area_name}}</option>
+                                    {% endfor%}
+                                </select>
+                            </div> {% endcomment %}
+                            <div class="form-group col-lg-6">
+                                <label>Mobile</label>
+                                <input type="text" name="mobile"  class="form-control" value="{{all_user.mobile}}" minlength='10' maxlength='11' oninput="validateNumericInput(this)">
+                            </div>  
+                            <div class="form-group col-lg-6">
+                                <label>Location<span class="color_red" style="color:red">*</span></label>
+                                <select name="location_id" id="location_id" class="form-control" required="">
+                                    <option value="">-- Select Location --</option> 
+                                    {% for locationes in locationes %}
+                                    <option value="{{locationes.id}}" {% if all_user.location_id == locationes.id %} selected {% endif %}>{{locationes.location_name}}</option>
+                                    {% endfor%}
+                                </select>
+                            </div>
+                            {% comment %} <div class="form-group col-lg-6">
+                                <label>Roles <span class="color_red" style="color:red">*</span></label>
+                                <select name="roles_id" id="rolest_id" class="form-control" required="">
+                                    <option value="">-- Select Roles --</option>    
+                                    {% for role_key, role_name in roles.items %}
+                                        <option value="{{ role_key }}" {% if role_key == user_role_key  %} selected {% endif %}>{{ role_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> {% endcomment %}
+
+                            <div class="form-group col-lg-12">
+                                <label>Roles <span class="color_red" style="color:red">*</span></label>
+                                <select name="roles_id[]" id="rolest_id" class="form-control" multiple="multiple" required>
+                                    {% for role_key, role_name in roles.items %}
+                                        <option value="{{ role_key }}" {% if role_key in user_role_keys %} selected {% endif %}>{{ role_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-lg-12">
+                                <label>Designation<span class="color_red" style="color:red">*</span></label>
+                                <select name="designation_id" id="designation_id" class="form-control" required="">
+                                    <option value="">-- Select Designation  --</option>
+                                    {% for designation in designationes %}
+                                    <option value="{{designation.id}}" {% if all_user.designation_id == designation.id %} selected {% endif %}>{{designation.name}}</option>
+                                    {% endfor%}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-lg-12">
+                                <label>Gender <span class="color_red" style="color:red">*</span></label>
+                                <select name="gender" id="gender" class="form-control" required="">
+                                    <option value="">-- Select Gender --</option>    
+                                    <option {% if all_user.gender == 'Male'  %} selected {% endif %}>Male</option>
+                                    <option {% if all_user.gender == 'Female'  %} selected {% endif %}>Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-lg-12">
+                                <label>Address <span style="color:red">*</span></label>
+                                <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="address" required>{{all_user.address}}</textarea>
+                            </div>
+                            
+                            <div class="form-group col-lg-12">
+                                {% if all_user.image %}
+                                    <img src="{{user_data.users_images}}{{ all_user.image.url }}" alt="User Image" style="width: 100px; height: 97px;">
+                                {% endif %}
+                                <label for="exampleInputFile">User Image</label>
+                                <input type="file" id="exampleInputFile"  name="image" class="form-control" >
+          <!--                      <p class="help-block">Example block-level help text here.</p>-->
+                              </div> 
+                              <div class="form-group col-lg-12">
+                                <label>Status  <span style="color:red">*</span></label>
+                                <select name="status" id="status" class="form-control" required="">
+                                  <option value="1" {% if all_user.is_active == 1  %} selected {% endif %}>Active</option>
+                                  <option value="0" {% if all_user.is_active == 0  %} selected {% endif %}>Inactive</option>
+                                </select>
+                              </div>
+                              
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#rolest_id').multiselect({search: true,});
+    });
+    </script>

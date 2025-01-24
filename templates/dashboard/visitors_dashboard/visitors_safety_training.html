@@ -1,0 +1,190 @@
+{% comment %} 
+
+
+
+
+<!DOCTYPE html>
+<html lang="en"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Training</title>
+    <script>
+        window.onload = function() {
+            var video = document.getElementById('safety-video');
+            if (video) {
+                video.muted = false; 
+                video.play();
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Safety Training Videos</h1>
+
+    {% if last_video %}
+            <div>
+                <h3>{{ video.title }}</h3> 
+                <video id="safety-video" width="640" height="360" controls autoplay muted>
+                    <source src="/safety_training/{{ last_video }}" type="video/mp4"> 
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+    {% else %}
+        <p>No safety training videos available at the moment.</p>
+    {% endif %}
+</body>
+</html>
+
+ {% endcomment %}
+
+
+
+ {% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Training</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        window.onload = function() {
+            var video = document.getElementById('safety-video');
+            if (video) {
+                // Ensure video is not muted and play it automatically
+                video.muted = false; 
+                video.play();
+
+                // Add event listener for video completion
+                video.addEventListener('ended', function() {
+                    // Call AJAX to update the safety training status
+                    const userId = "{{ user_id|escapejs }}";  // Use the escapejs filter to avoid issues with quotes
+                    console.log("User ID from Django:", userId); // Check if it's correctly logged in the browser
+
+                    if (userId) {  // Ensure user_id is valid
+                        $.ajax({
+                            url: "{% url 'update_safety_training_status' %}",
+                            type: "POST",
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            data: JSON.stringify({ user_id: userId }),
+                            contentType: "application/json",
+                            success: function(response) {
+                                alert('Safety training completed!');
+                                window.location.href = "{% url 'visitors_dashboard' %}"; // Redirect to the dashboard
+                            },
+                            error: function(xhr) {
+                                alert(xhr.responseJSON.message || "An error occurred.");
+                            }
+                        });
+                    } else {
+                        alert("User ID is missing or invalid.");
+                    }
+                });
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>Safety Training Videos</h1>
+
+    {% if last_video %}
+        <div>
+            <h3>{{ last_video.title }}</h3> <!-- Display video title -->
+            <video id="safety-video" width="640" height="360" controls autoplay muted>
+                <source src="/safety_training/{{ last_video }}" type="video/mp4"> 
+                Your browser does not support the video tag.
+                <p>User ID: {{ user_id }}</p> 
+            </video>
+        </div>
+    {% else %}
+        <p>No safety training videos available at the moment.</p>
+    {% endif %}
+
+    
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Training</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        window.onload = function() {
+            var video = document.getElementById('safety-video');
+            if (video) {
+                // Ensure video is not muted and play it automatically
+                video.muted = false; 
+                video.play();
+
+                // Add event listener for video completion
+                video.addEventListener('ended', function() {
+                    // Call AJAX to update the safety training status
+                    const userId = "{{ user_id|escapejs }}";  // Use the escapejs filter to avoid issues with quotes
+                    console.log("User ID from Django:", userId); // Check if it's correctly logged in the browser
+
+                    if (userId) {  // Ensure user_id is valid
+                        $.ajax({
+                            url: "{% url 'update_safety_training_status' %}",
+                            type: "POST",
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            data: JSON.stringify({ user_id: userId }),
+                            contentType: "application/json",
+                            success: function(response) {
+                                alert('Safety training completed!');
+                                window.location.href = "{% url 'visitors_dashboard' %}"; // Redirect to the dashboard
+                            },
+                            error: function(xhr) {
+                                alert(xhr.responseJSON.message || "An error occurred.");
+                            }
+                        });
+                    } else {
+                        alert("User ID is missing or invalid.");
+                    }
+                });
+            }
+        };
+    </script>
+    <style>
+        /* Hide fullscreen button in video controls */
+        #safety-video::-webkit-media-controls-fullscreen-button {
+            display: none;
+        }
+
+        #safety-video::-moz-media-controls-fullscreen-button {
+            display: none;
+        }
+
+        #safety-video::-ms-media-controls-fullscreen-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Safety Training Videos</h1>
+
+    {% if last_video %}
+        <div>
+            <h3>{{ last_video.title }}</h3> <!-- Display video title -->
+            <video id="safety-video" width="640" height="360" autoplay muted>
+                <source src="/safety_training/{{ last_video }}" type="video/mp4"> 
+                Your browser does not support the video tag.
+                <p>User ID: {{ user_id }}</p> 
+            </video>
+        </div>
+    {% else %}
+        <p>No safety training videos available at the moment.</p>
+    {% endif %}
+</body>
+</html>

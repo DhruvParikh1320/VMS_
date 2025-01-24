@@ -1,0 +1,352 @@
+
+
+{% load static %}
+{% include 'dashboard/employee_dashboard/header.html' %}
+{% include 'dashboard/employee_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding:10px;">
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+ <!-- Main content -->
+ <section class="content">
+  <!-- Small boxes (Stat box) -->
+  <div class="row">
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{total_visitors_count}}</h3>
+          <p>Today Appointment</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-calendar"></i>
+        </div>
+        {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+      </div>
+    </div><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{pending_count}}</h3>
+          <p>Pending Request</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-clock-o"></i>
+        </div>
+        {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+      </div>
+    </div><!-- ./col -->
+
+    
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{check_in_count}}</h3>
+          <p>Total Check In</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-sign-in"></i>
+        </div>
+        {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+      </div>
+    </div><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+      <!-- small box -->
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{check_out_count}}</h3>
+          <p>Total Check Out</p>
+        </div>
+        <div class="icon">
+          <i class="fa fa-sign-out"></i>
+        </div>
+        {% comment %} <a href="{% url 'employee_visitore_all_page' %}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+      </div>
+    </div><!-- ./col -->
+  </div><!-- /.row -->
+  
+</section>
+<section class="content">
+  <div class="row">
+  
+    <!-- Visitor Check In Table -->
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">Visitor Check In</h3>
+        </div>
+        <div class="box-body">
+          <div class="table-responsive">
+            <table id="check_in_table" class="table table-bordered table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Visitor Name</th>
+                  <th>Visitor Mobile</th>
+                  <th>Visitor Email</th>
+                  <th>Visitor UNI ID</th>
+                  <th>Visitor Image</th>
+                  <th>Employee Name</th>
+                  <th>Check-In Time</th>
+                  <th>Meeting status</th>
+                  <th>Check-Out Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if all_check_in_dtl %}
+                  {% for appointment in all_check_in_dtl %}
+                  <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                    <td>{{ appointment.visitors_mobile }}</td>
+                    <td>{{ appointment.visitors_email }}</td>
+                    <td>{{ appointment.visitors_uni_id }}</td>
+                    <td>
+                      {% if appointment.visitors_image %}
+                        <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% else %}
+                        <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% endif %}
+                    </td>
+                    <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                    <td>{{ appointment.start_time }}</td>
+                    <td>In the Meeting</td>
+                    <td>{{ appointment.stop_time }}</td>
+                    <td>
+                      <button class="btn btn-success" data-appointment-id="{{ appointment.id }}" onclick="changeStatus('{{ appointment.id }}', 'accepted')" ><i class="fa fa-fw fa-eye" title='View'></i></button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="9">No visitors have checked in today.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Visitor Check Out Table -->
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">Visitor Check Out</h3>
+        </div>
+        <div class="box-body">
+          <div class="table-responsive">
+            <table id="check_out_table" class="table table-bordered table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Visitor Name</th>
+                  <th>Visitor Mobile</th>
+                  <th>Visitor Email</th>
+                  <th>Visitor UNI ID</th>
+                  <th>Visitor Image</th>
+                  <th>Employee Name</th>
+                  <th>Check-In Time</th>
+                  <th>Meeting status</th>
+                  <th>Check-Out Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if all_check_out_dtl %}
+                  {% for appointment in all_check_out_dtl %}
+                  <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                    <td>{{ appointment.visitors_mobile }}</td>
+                    <td>{{ appointment.visitors_email }}</td>
+                    <td>{{ appointment.visitors_uni_id }}</td>
+                    <td>
+                      {% if appointment.visitors_image %}
+                        <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% else %}
+                        <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% endif %}
+                    </td>
+                    <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                    <td>{{ appointment.start_time }}</td>
+                    <td>Meeting out</td>
+                    <td>{{ appointment.stop_time }}</td>
+                    <td>
+                      <button class="btn btn-success" data-appointment-id="{{ appointment.id }}" onclick="changeStatus('{{ appointment.id }}', 'accepted')" ><i class="fa fa-fw fa-eye" title='View'></i></button>
+                  </td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="9">No visitors have checked out today.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Visitor Pending Table -->
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">Visitor Pending</h3>
+        </div>
+        <div class="box-body">
+          <div class="table-responsive">
+            <table id="pending_table" class="table table-bordered table-striped" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Visitor Name</th>
+                  <th>Visitor Mobile</th>
+                  <th>Visitor Email</th>
+                  <th>Visitor UNI ID</th>
+                  <th>Visitor Image</th>
+                  <th>Employee Name</th>
+                  <th>Appointment Status</th>
+                  <th>Check-In Time</th>
+                  <th>Check-Out Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if all_pending_list %}
+                  {% for appointment in all_pending_list %}
+                  <tr>
+                    <td>{{ appointment.id }}</td>
+                    <td>{{ appointment.visitors_name }} {{ appointment.visitors_last_name }}</td>
+                    <td>{{ appointment.visitors_mobile }}</td>
+                    <td>{{ appointment.visitors_email }}</td>
+                    <td>{{ appointment.visitors_uni_id }}</td>
+                    <td>
+                      {% if appointment.visitors_image %}
+                        <img src="{{IMAGEPATH}}{{ appointment.visitors_image }}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% else %}
+                        <img src="{{DEFAULT_IMAGE}}" alt="Visitor Image" style="width: 50px; height: 50px;">
+                      {% endif %}
+                    </td>
+                    <td>{{ appointment.employee_name }} {{ appointment.employee_last_name }}</td>
+                    <td>{{ appointment.status }}</td>
+                    <td>{{ appointment.start_time }}</td>
+                    <td>{{ appointment.stop_time }}</td>
+                    <td>
+                      <button class="btn btn-success" data-appointment-id="{{ appointment.id }}" onclick="changeStatus('{{ appointment.id }}', 'accepted')" ><i class="fa fa-fw fa-eye" title='View'></i></button>
+                  </td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="9">No pending visitors today.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<div class="modal fade" id="visitorModal" tabindex="-1" role="dialog" aria-labelledby="visitorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="visitorModalLabel">Visitor Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <table class="table table-bordered">
+                  <tbody id="visitor-details-body">
+                      <!-- Dynamic content will be injected here by JavaScript -->
+                  </tbody>
+              </table>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script>
+  $('.btn-success').on('click', function() {
+    var appointmentId = $(this).attr('data-appointment-id');
+    $.ajax({
+        url: '/api/visitore_detail',
+        type: 'POST',
+        data: {
+            'appointment_id': appointmentId,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'  // Ensure this is available in the template
+        },
+        success: function(response) {
+            if (response.status === "true") {
+                var data = response.data[0];  // Assuming response.data is an array
+                var appointmentReason = response.appointment_reason ? response.appointment_reason[0] : null;
+  
+                // Start building modal content
+                var modalContent = `
+                    <tr><td><strong>ID:</strong></td><td>${data.id}</td></tr>
+                    <tr><td><strong>Visitor Name:</strong></td><td>${data.visitor_first_name}</td></tr>
+                    <tr><td><strong>Email:</strong></td><td>${data.visitor_email}</td></tr>
+                    <tr><td><strong>Mobile:</strong></td><td>${data.visitor_mobile}</td></tr>
+                    <tr><td><strong>Image:</strong></td><td><img src="${data.visitors_image}" alt="Visitor Image" class="visitor-image" style="width: 100px; height: 100px;"></td></tr>
+                    <tr><td><strong>Purpose:</strong></td><td>${data.purpose}</td></tr>
+                    <tr><td><strong>Details:</strong></td><td>${data.detail}</td></tr>
+                    <tr><td><strong>Visitor Type:</strong></td><td>${data.visitors_type}</td></tr>
+                    <tr><td><strong>Check-In Time:</strong></td><td>${data.check_in_time}</td></tr>
+                    <tr><td><strong>Check-Out Time:</strong></td><td>${data.check_out_time}</td></tr>`;
+  
+                // Add appointment reason only if the status is rejected and appointmentReason exists
+                if (data.status === "rejected" && appointmentReason) {
+                    modalContent += `
+                    <tr><td><strong>Appointment Reason:</strong></td><td>${appointmentReason.appointment_reason}</td></tr>
+                    <tr><td><strong>Appointment Date:</strong></td><td>${appointmentReason.appointment_date}</td></tr>
+                    <tr><td><strong>Appointment Time:</strong></td><td>${appointmentReason.appointment_time}</td></tr>`;
+                }
+  
+                // Insert the modal content into the modal body
+                $('#visitor-details-body').html(modalContent);
+  
+                // Show the modal
+                $('#visitorModal').modal('show');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred. Please try again later.');
+        }
+    });
+  });
+  </script>

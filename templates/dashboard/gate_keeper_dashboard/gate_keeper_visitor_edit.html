@@ -1,0 +1,383 @@
+{% load static %}
+{% include 'dashboard/gate_keeper_dashboard/header.html' %}
+{% include 'dashboard/gate_keeper_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header">
+      <h1>
+        Edit Appointment
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Edit Appointment</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Quick Edit Appointment</h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                    <form role="form" method="POST" enctype="multipart/form-data" action="">
+                        {% csrf_token %}
+                        
+                        <div class="box-body">
+                            <div class='row'>
+                                <div class='col-md-6'>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputFirstname1">First name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control" id="exampleInputFirstname1" placeholder="Enter Firstname" name="Firstname" value='{{user.first_name}}' required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputLastname1">Last name <span style="color:red">*</span></label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" class="form-control"  id="exampleInputLastname1" placeholder="Enter Lastname" name="Lastname" value='{{user.last_name}}' required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label for="exampleInputEmail1">Email Address</label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" name="Email" value='{{ user.email |default:'' }}'>
+                                        </div>
+                                    </div>
+                
+                                    <!--<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputPassword1">Password </label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="Password" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label for="exampleInputConfirmPassword1">Confirm Password </label>
+                                        <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Confirm Password"  name="Confirm_Password" >
+                                        </div>
+                                    </div>-->
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Mobile Number</label>
+                                        <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                        </div>
+                                        <input type="text" class="form-control" id="mobileNumberInput" placeholder="Enter Mobile Number" pattern="[0-9]*" inputmode="numeric" minlength ="10" maxlength='11' name="mobile" value='{{user.mobile}}' oninput="validateNumericInput(this)">
+                                        </div><!-- /.input group -->
+                                    </div>
+                                    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label>Gender <span style="color:red">*</span></label>
+                                        <select class="form-control" name="gender" required>
+                                        <option>Choose Gender</option>
+                                        <option {% if user.gender == 'Male'  %} selected {% endif %}>Male</option>
+                                    <option {% if user.gender == 'Female'  %} selected {% endif %}>Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+                                        <label>Visitors Type <span style="color:red">*</span></label>
+                                        <select class="form-control select2" name="visitors_type" required>
+                                            <option value="">Choose visitors type</option>
+                                            <option value="candidate"{% if appointment.visitors_type == 'candidate'  %} selected {% endif %}>Candidate </option>
+                                            <option value="customer"{% if appointment.visitors_type == 'customer'  %} selected {% endif %}>Customer</option>
+                                            <option value="general"{% if appointment.visitors_type == 'general'  %} selected {% endif %}>General</option>
+                                            <option value="government officer"{% if appointment.visitors_type  == 'government officer'  %} selected {% endif %}>Government Officer</option>
+                                            <option value="interviewer"{% if appointment.visitors_type == 'interviewer'  %} selected {% endif %}>Inter viewer</option>
+                                            <option value="vendor"{% if appointment.visitors_type == 'vendor'  %} selected {% endif %}>vendor</option>
+                                            <option value="other"{% if appointment.visitors_type == 'other'  %} selected {% endif %}>Other</option>
+                                        </select>
+                                    </div>
+                                    {% comment %} <div class="form-group col-lg-6">
+                                        <label>Roles <span class="color_red" style="color:red">*</span></label>
+                                        <select name="roles_id" id="rolest_id" class="form-control" required="">
+                                            <option value="">-- Select Roles --</option>    
+                                            {% for roles in roles %}
+                                            <option value="{{roles.name}}" >{{roles.name}}</option>
+                                            {% endfor%}
+                                        </select>
+                                    </div> {% endcomment %}
+                                    <div class="form-group col-lg-12">
+                                        <label>Address <span style="color:red">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter your address ..." name="Address" required>{{user.address}}</textarea>
+                                    </div>
+                                    {% comment %} <div class="form-group col-lg-12">
+                                        <label for="exampleInputFile">Profile Image</label>
+                                        <input type="file" id="exampleInputFile"  name="image" class="form-control" >
+                                    </div> {% endcomment %}
+                                    
+                                    <div class ='col-md-6'>
+                                        <div class="form-group">
+                                            {% if user.image %}
+                                                <img src="{{ user_data.users_images }}{{ user.image }}" alt="Visitor Image" style="width: 100px; height: 97px;" >
+                                            {% else %}
+                                                <img src="{{ user_data.default_image}}" alt="Default Image">
+                                            {% endif %} 
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12">
+
+                                        <label for="exampleInputFile">Profile Image</label>
+
+                                        {% comment %} <input type="file" id="exampleInputFile"  name="image" class="form-control" required> {% endcomment %}
+                                        <div class="picture-container">
+                                            <div class='col-lg-4'>
+                                                <video id="video" width="150" height="150" autoplay style='border:1px solid #ccc;object-fit: cover;'></video>
+                                                <canvas id="canvas" style="display:none;" width='150' height='150'></canvas>
+                                                <br>
+                                                <button type="button" class="btn btn-primary btn-open-camera">Open Camera</button>
+                                                <button type="button" class="btn btn-success btn-take-picture">Take a Picture</button>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class='col-lg-3'>
+                                            <div class="form-group" id='image_user' style='display:none'>                                        
+                                                <img src="" alt="" width="150" height="150">
+                                                <input type="hidden" value="" id="base_user_image" name='user_image'>
+                                            </div>
+                                        </div>
+
+                                        
+                                    </div>
+                                    
+                                </div>
+                            <div class='col-md-6'>                             
+                                <div class="form-group col-lg-12 ">
+                                    <label>Employee <span style="color:red">*</span></label>
+                                    <select class="form-control select2"  id="employee-dropdown" name="employee" required>
+                                        <option value="">Choose employee</option>
+                                        {% for i in all_employee %}
+                                            <option value="{{ i.id }}" {% if i.id == appointment.employee_id %} selected {% endif %}>{{i.employee_code}} {{ i.first_name }} {{i.last_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label>Company <span class="color_red" style="color:red">*</span></label>
+                                    <select name="company_id" id="company_ide" class="form-control" required="">
+                                        <option value="">-- Select Company  --</option>
+                                        {% for companyes in companyes %}
+                                        <option value="{{companyes.id}}" {% if user.company_id == companyes.id %} selected {% endif %}>{{companyes.company_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label>Department <span class="color_red" style="color:red">*</span></label>
+                                    <select name="department_id" id="department_ide" class="form-control" required="">
+                                        <option value="">-- Select Department --</option>    
+                                        {% for departments in departmentes %}
+                                        <option value="{{departments.id}}" {% if user.department_id == departments.id %} selected {% endif %}>{{departments.department_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+    
+                                <div class="form-group col-lg-4">
+                                    <label>Location<span class="color_red" style="color:red">*</span></label>
+                                    <select name="location_id" id="location_id" class="form-control" required="">
+                                        <option value="">-- Select Location --</option> 
+                                        {% for locationes in locationes %}
+                                        <option value="{{locationes.id}}" {% if user.location_id == locationes.id %} selected {% endif %}>{{locationes.location_name}}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                             
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputDate1">Check In Date <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="date" class="form-control"  id="datepicker" placeholder="" name="date"  value='{{appointment.date}}' required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Check In Time <span style="color:red">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepicker" placeholder="Select time" name="time" value='{{appointment.time}}' required>
+                                    </div>
+                                </div>
+                                
+                                 <div class="form-group col-lg-12">
+                                    <label for="exampleInputTime1">Visitors Timing </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-clock-o"></i></span>
+                                        <input type="text" class="form-control" id="timepickere" placeholder="Select time" name="visitors_timing" value='{{appointment.visitors_timing}}'>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Other Detail</label>
+                                    <textarea class="form-control" rows="3" placeholder="Other Detail ..." name="detail">{{appointment.detail}}</textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Purpose <span style="color:red">*</span></label>
+                                    <textarea class="form-control" rows="3" placeholder="Purpose ..." name="Purpose" required>{{appointment.purpose}}</textarea>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label>Status  <span style="color:red">*</span></label>
+                                    <select name="status" id="status" class="form-control" required="">
+                                      <option value="1" {% if user.is_active == '1'  %} selected {% endif %}>Active</option>
+                                      <option value="0" {% if user.is_active == '0'  %} selected {% endif %}>Inactive</option>
+                                    </select>
+                                  </div>
+                                <!--  <div class="form-group col-lg-6">-->
+                                <!--    <label>Access Card <span style="color:red">*</span></label>-->
+                                <!--    <select name="employe_API" id="employe_API" class="form-control" required>              -->
+                                <!--        <option value="{{ api_data_employees_get.id }}">{{ api_data_employees_get.first_name }}</option>-->
+                                <!--    </select>-->
+                                <!--</div>-->
+                                <!--<div class="form-group col-lg-6">-->
+                                <!--    <label>Area</label>-->
+                                <!--    <select name="Area[]" id="emp_area" class="form-control" multiple="multiple">-->
+                                <!--        {% for area in api_data.data %}-->
+                                <!--            <option value="{{ area.id }}" -->
+                                <!--                {% for assigned_area in employees_assigned_areas %}-->
+                                <!--                    {% if assigned_area.id == area.id %}-->
+                                <!--                        selected-->
+                                <!--                    {% endif %}-->
+                                <!--                {% endfor %}-->
+                                <!--            >-->
+                                <!--                {{ area.area_name }}-->
+                                <!--            </option>-->
+                                <!--        {% endfor %}-->
+                                <!--    </select>-->
+                                <!--</div>  -->
+                            </div>                       
+                        </div>
+    
+                        <div class="box-footer text-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Flatpickr for timepicker
+        flatpickr("#timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // AM/PM format
+            time_24hr: false // Use 12-hour format
+        });
+
+        // Set the minimum date for datepicker
+        var dateInput = document.getElementById('datepicker');
+        var today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // Initialize Select2
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const openCameraBtn = document.querySelector('.btn-open-camera');
+        const takePictureBtn = document.querySelector('.btn-take-picture');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const imageElement = document.querySelector('#image_user img');
+        const inputElement = document.querySelector('#image_user input');
+        const context = canvas.getContext('2d');
+        let imageCount = 0; // Counter for the number of images captured
+        const capturePhotoUrl = '{% url "capture_photo" %}';
+        console.log('Capture Photo URL:', capturePhotoUrl); 
+        
+        function openCamera() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing the camera:', error);
+                    });
+                } else {
+                    console.error("Camera not supported by this browser.");
+                }
+            } catch(err) {
+                console.error('Error:', err);
+            }
+        }
+
+        function takePicture() {
+            if (imageCount < 1) { // Take pictures until 5 images are captured
+                context.drawImage(video, 0, 0, 150, 150);
+                console.log('context:', context);
+                const imageDataURL = canvas.toDataURL('image/jpeg');
+                console.log('Picture taken:', imageDataURL);
+
+                if (imageElement) {
+                    imageElement.src = imageDataURL;
+                    inputElement.value = imageDataURL;
+                    $("#image_user").show();
+                    $('#btn_submit').prop('disabled', false);
+                }
+
+                // Send the captured image data to the server using AJAX
+                /*$.ajax({
+                    url: capturePhotoUrl,
+                    type: 'POST',
+                    data: {
+                        image: imageDataURL,
+                        name: firstNameInput.value
+                    },
+                    success: function(data) {
+                        console.log('Server response:', data);
+                        // Handle the server response as needed
+                        if (data.status === 'success') {
+                            imageCount++;
+                            if (imageCount === 1) {
+                                // Close the camera after capturing 5 images
+                                video.srcObject.getTracks().forEach(track => {
+                                    track.stop();
+                                });
+                            }
+                        } else {
+                            console.error('Image capture failed.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error sending image data:', error);
+                        // Handle error
+                    }
+                });*/
+            }
+        }
+
+        openCameraBtn.addEventListener('click', openCamera);
+        takePictureBtn.addEventListener('click', takePicture);
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#emp_area').multiselect({search: true,});
+    });
+</script>

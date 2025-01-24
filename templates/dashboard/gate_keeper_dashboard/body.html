@@ -1,0 +1,100 @@
+
+{% load static %}
+{% block content  %}
+<body class="skin-blue">
+    <div class="wrapper">
+      
+      <header class="main-header">
+        <!-- Logo -->
+        {% comment %} <a href="" class="logo" style="position:fixed"><b>Gate Keeper</b></a> {% endcomment %}
+        <b class="logo" style="position:fixed"><b>Gate Keeper</b></b>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="hidden-xs" style="text-transform: capitalize;">{{gate_keeper_data.user_name}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    {% if gate_keeper_data.image  %}
+                        <img src="{{ gate_keeper_data.users_images  }}{{ gate_keeper_data.image }}" alt="Visitor Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% else %}
+                        <img src="{{gate_keeper_data.default_image}}" alt="Default Image" style="width: 100px; height: 97px;" class="img-circle">
+                    {% endif %} 
+                    {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+                    <p style="text-transform: capitalize;">
+                      {{gate_keeper_data.user_name}}
+<!--                      <small>Member since Nov. 2012</small>-->
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      <a href="{%url 'gate_keeper_edit' %}" class="btn btn-default btn-flat">Profile</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="{% url 'gate_keepe_logout' %}" class="btn btn-default btn-flat">Sign out</a>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="position:fixed">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              {% if gate_keeper_data.image %}
+                  <img src="{{ gate_keeper_data.users_images }}{{ gate_keeper_data.image }}" alt="Visitor Image" style="width: 50px; height: 50px;" class="img-circle">
+              {% else %}
+                  <img src="{{gate_keeper_data.default_image}}" alt="Default Image" class="img-circle">
+              {% endif %}
+              {% comment %} <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image" /> {% endcomment %}
+            </div>
+            <div class="pull-left info" style="text-transform: capitalize;">
+              <p>{{gate_keeper_data.user_name}}</p>
+
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+          </div>
+          <!-- search form -->
+          <!-- /.search form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          
+          <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="treeview" id="dashboard-menu">
+              <a href="{%url 'gate_keeper_dashboard' %}">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="treeview" id="visitor-menu">
+              <a href="#">
+                <i class="fa fa-edit"></i> <span>Visitor</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'gate_keeper_visitor_verification' %}"><i class="fa fa-circle-o"></i> Appointments  </a></li>
+                <li><a href="{% url 'gate_keeper_visitor_add' %}"><i class="fa fa-circle-o"></i>Add New Appointments </a></li>
+                <li><a href="{% url 'gate_keeper_user' %}"><i class="fa fa-circle-o"></i> All Visitors</a></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+      
+{% endblock content  %}

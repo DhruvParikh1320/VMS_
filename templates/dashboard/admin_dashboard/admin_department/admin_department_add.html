@@ -1,0 +1,88 @@
+{% load static %}
+{% include 'dashboard/admin_dashboard/header.html' %}
+{% include 'dashboard/admin_dashboard/body.html' %}
+<!-- Right side column. Contains the navbar and content of the page -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div style="padding: 10px;">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'danger' in message.tags %}alert-danger{% endif %}" role="alert" id="success-alert">
+  <!--                            <div class="alert alert-success" role="alert" id="success-alert">-->
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <section class="content-header text-center">
+      <h1>
+        Department Management
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Department Management</li>
+      </ol>
+    </section>
+    <section class="content">
+    <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                  <div class="box-header">
+                    <h3 class="box-title">Add Department </h3>
+                  </div><!-- /.box-header -->
+                  <!-- form start -->
+                  <form role="form" method="POST" enctype="multipart/form-data" action="">
+                    {% csrf_token %}
+                      
+                        <div class="form-group col-lg-6">
+                            <label>Department Name</label>
+                            <input type="text" name="department_name" required="" class="form-control" value="">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Department Code</label>
+                            <input type="text" name="department_code" required="" class="form-control" value="">
+                        </div>
+                        <div class="form-group col-lg-6" style="clear: both;">
+                            <label>Company</label>
+                            <select name="company_id" id="company_id" class="form-control" required="">
+                                {% for companyes in companyes %}
+                                <option value="{{companyes.id}}">{{companyes.company_name}}</option>
+                                {% endfor%}
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label>Location</label>
+                            <select name="location_id" id="location_id" class="form-control" required="">
+                                {% for locationes in locationes %}
+                                <option value="{{locationes.id}}">{{locationes.location_name}}</option>
+                                {% endfor%}
+                            </select>
+                        </div>
+                        <!-- New Department Color Code Field -->
+                      <div class="form-group col-lg-12">
+                          <label for="department_color_code">Department Color Code</label>
+                          <div class="d-flex align-items-center">
+                              <input type="color" name="department_color_code" id="department_color_code" required="" class="form-control" value="#000000" style="max-width: 60px; margin-right: 10px;">
+                          </div>
+                      </div> 
+                       
+                      <div class="box-footer text-right">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                  </form>
+                </div><!-- /.box -->
+
+
+              </div>
+            </div>   <!-- /.row -->
+        </div>
+    </section>
+</div>
+{% include 'dashboard/visitors_dashboard/footer.html' %}
