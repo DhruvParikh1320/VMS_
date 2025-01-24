@@ -28,7 +28,7 @@ DOMAIN_URL ='https://192.168.1.137:7000/'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.137']
+ALLOWED_HOSTS = ['192.168.1.137','*']
 
 
 # Application definition
