@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-p=j6kg6h*i2edfa6r(dnhvoa%@yf+ecm9j!p8p1@1y2*+-s-(v'
 
-DOMAIN_URL ='https://192.168.1.137:8000/'
+DOMAIN_URL ='https://192.168.1.137:9000/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
